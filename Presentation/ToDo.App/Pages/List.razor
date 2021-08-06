@@ -1,0 +1,71 @@
+﻿@page "/list"
+
+@using ToDo.Api.Contract.ToDo.Models
+
+<div class="row">
+    @if (SelectedList is not {})
+    {
+        <RadzenButton Click="OnListAdd" Text="Add List"/>
+    }
+    else
+    {
+        <div class="form-group row">
+            <label class="col-4 col-form-label">Name</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <RadzenTextBox @bind-Value="@SelectedList.Name"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="offset-4 col-8">
+                <RadzenButton Click="OnListSaved" Text="Submit"/>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-4">
+        <RadzenDataGrid TItem="ToDoList" Count="@(Lists?.Count ?? 0)" Data="@Lists"
+                        AllowPaging="true" PageSize="18"
+                        AllowFiltering="true" FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        RowSelect="ListRowSelected" RowDeselect="ListRowDeselected" SelectionMode="DataGridSelectionMode.Single"
+                        AllowColumnResize="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="ToDoList" Property="Name" Title="Name"/>
+                <RadzenDataGridColumn TItem="ToDoList" Property="CreatedAt" Title="Created At">
+                    <Template Context="item">
+                        @item.CreatedAt.LocalDateTime.ToString("yyyy, MMM dd (HH:mm)")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ToDoList" Property="CreatedBy" Title="Created By"/>
+                <RadzenDataGridColumn TItem="ToDoList" Title="#">
+                    <Template Context="item">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Primary" IsPill="true" Text="@item.TaskCount.ToString()"/>
+                        <RadzenBadge BadgeStyle="BadgeStyle.Danger" IsPill="true" Text="@item.ActiveTaskCount.ToString()"/>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+    <div class="col-8">
+        
+        @if (SelectedItem is {})
+        {
+            <RadzenTextBox @bind-Value="@SelectedItem.Task"/>
+            <RadzenButton Text="Save ToDo" Click="OnItemSaved"/>
+        }
+        
+        @if (SelectedList is {} && SelectedItem is null)
+        {
+            <RadzenButton Text="Add ToDo" Click="OnItemAdd"/>
+        }
+        
+        @if (SelectedList is {})
+        {
+            <TasksGrid List="@SelectedList" Tasks="@Tasks"/>
+        }
+        
+    </div>
+</div>

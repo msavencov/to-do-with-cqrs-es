@@ -1,0 +1,28 @@
+﻿@using Api.Contract.ToDo.Models
+
+<RadzenDataGrid TItem="ToDoItem" Count="@(Tasks?.Count ?? 0)" Data="@Tasks"
+                AllowPaging="true" PageSize="18">
+    <Columns>
+        <RadzenDataGridColumn TItem="ToDoItem" Property="CreatedAt" Title="Created At" Width="150px">
+            <Template Context="item">
+                @item.CreatedAt.LocalDateTime.ToString("yyyy, MMM dd (HH:mm)")
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ToDoItem" Property="CreatedBy" Title="Created By" Width="150px"/>
+        <RadzenDataGridColumn TItem="ToDoItem" Title="Task">
+            <Template Context="item">
+                <p style="overflow: auto; white-space: initial;">
+                    @item.Task
+                </p>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ToDoItem">
+            <Template Context="item">
+                @if (item.IsCompleted == false)
+                {
+                    <RadzenButton Text="Done" Click="() => TaskItemDone(item)" ButtonStyle="ButtonStyle.Primary"/>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

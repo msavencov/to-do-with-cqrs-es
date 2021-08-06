@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <RadzenDialog/>
+    <RadzenNotification/>
+    <RadzenTooltip/>
+    
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <div class="main">
+        <div class="content px-4">
+            <AuthorizeView>
+                <Authorized>
+                    @Body
+                </Authorized>
+                <NotAuthorized>
+                    Access Denied.
+                </NotAuthorized>
+            </AuthorizeView>
+            
+        </div>
+    </div>
+</div>

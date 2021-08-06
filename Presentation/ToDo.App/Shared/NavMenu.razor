@@ -1,0 +1,18 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">ToDo.App</a>
+</div>
+
+<RadzenPanelMenu>
+    <AuthorizeView>
+        
+        <Authorized>
+            <RadzenPanelMenuItem Text="Lists" Path="list" Icon="list"/>
+            <RadzenPanelMenuItem Text="Logout" Path="account/logout" Icon="logout"/>
+        </Authorized>
+
+        <NotAuthorized>
+            <RadzenPanelMenuItem Text="Login" Path="account/login" Icon="account_box"/>
+        </NotAuthorized>
+        
+    </AuthorizeView>
+</RadzenPanelMenu>
