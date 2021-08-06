@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{7B4BD37D-33B6-4A0D-B153-C716B0C100C8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "src\Domain", "{7B4BD37D-33B6-4A0D-B153-C716B0C100C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Core", "Domain\ToDo.Core\ToDo.Core.csproj", "{498EE7B2-28DB-41C0-9A29-CA4AF64806D9}"
 EndProject
