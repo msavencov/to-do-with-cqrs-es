@@ -13,6 +13,7 @@ namespace ToDo.ReadStore.ToDo
         , IAmReadModelFor<ToDoList, ToDoListId, ToDoListCreated>
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemCreated>
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemCompleted>
+        , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemDeleted>
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -37,6 +38,10 @@ namespace ToDo.ReadStore.ToDo
         public void Apply(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemCompleted> domainEvent)
         {
             CompletedTaskCount += 1;
+        } 
+        public void Apply(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemDeleted> domainEvent)
+        {
+            TaskCount -= 1;
         } 
     }
 }

@@ -26,6 +26,11 @@ namespace ToDo.ReadStore.ToDo
             {
                 yield return itemCompleted.AggregateEvent.ListId.Value;
             }
+            
+            if (domainEvent is IDomainEvent<ToDoItem, ToDoItemId, ToDoItemCompleted> itemDeleted)
+            {
+                yield return itemDeleted.AggregateEvent.ListId.Value;
+            }
                 
         }
     }

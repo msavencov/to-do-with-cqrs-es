@@ -52,5 +52,11 @@ namespace ToDo.Api.Contract.ToDo
         /// </summary>
         /// <param name="id">The task ID</param>
         Task TaskDone(string id);
+
+        /// <summary>
+        /// Delete task
+        /// </summary>
+        /// <param name="id">The task ID</param>
+        Task DeleteTask(string id);
     }
 }

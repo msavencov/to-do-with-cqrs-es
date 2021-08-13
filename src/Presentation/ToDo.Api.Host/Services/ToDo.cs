@@ -120,5 +120,11 @@ namespace ToDo.Api.Host.Services
             var cmd = new CompleteToDoItem(ToDoItemId.With(id));
             var result = await _commandBus.PublishAsync(cmd, default);
         }
+
+        public async Task DeleteTask(string id)
+        {
+            var cmd = new DeleteToDoItem(new ToDoItemId(id));
+            var result = await _commandBus.PublishAsync(cmd, default);
+        }
     }
 }

@@ -17,5 +17,10 @@ namespace ToDo.App.Component
         {
             await Api.TaskDone(item.Id);
         }
+
+        private async Task TaskItemDelete(ToDoItem item)
+        {
+            await Api.DeleteTask(item.Id);
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace ToDo.Core.Item
 
         public void Complete()
         {
-            if (_state == TaskItemState.Completed)
+            if (_state == TaskItemState.Complete)
             {
                 throw DomainError.With("The task is already completed.");
             }
@@ -37,9 +37,19 @@ namespace ToDo.Core.Item
             Emit(new ToDoItemCompleted(Id, _listId));
         }
 
+        public void Delete()
+        {
+            Emit(new ToDoItemDeleted(Id, _listId));
+        } 
+            
         internal void Apply(ToDoItemCompleted _)
         {
-            _state = TaskItemState.Completed;
+            _state = TaskItemState.Complete;
+        }
+
+        internal void Apply(ToDoItemDeleted _)
+        {
+            _state = TaskItemState.Deleted;
         }
     }
 }

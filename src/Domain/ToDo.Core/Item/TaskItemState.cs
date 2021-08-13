@@ -3,7 +3,8 @@
     public enum TaskItemState
     {
         Open,
-        Progress,
-        Completed,
+        InProgress,
+        Complete,
+        Deleted
     }
 }

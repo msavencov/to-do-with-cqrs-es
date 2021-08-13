@@ -10,6 +10,7 @@ namespace ToDo.ReadStore.ToDo
     public class ToDoItemReadModel : IReadModel
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemCreated>
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemCompleted>
+        , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemDeleted>
     {
         public string Id { get; set; }
         public string ListId { get; set; }
@@ -17,6 +18,7 @@ namespace ToDo.ReadStore.ToDo
         public DateTimeOffset CreatedAt { get; set; }
         public string CreatedBy { get; set; }
         public bool IsCompleted { get; set; }
+        public bool IsDeleted { get; set; }
         
         public void Apply(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemCreated> domainEvent)
         {
@@ -30,6 +32,12 @@ namespace ToDo.ReadStore.ToDo
         public void Apply(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemCompleted> domainEvent)
         {
             IsCompleted = true;
+        }
+        
+        public void Apply(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemDeleted> domainEvent)
+        {
+            IsDeleted = true;
+            //context.MarkForDeletion();
         }
     }
 }
