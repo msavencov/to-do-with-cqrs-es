@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Security.Claims;
 using Autofac;
 using EventFlow;
@@ -6,9 +7,12 @@ using EventFlow.AspNetCore.Extensions;
 using EventFlow.AspNetCore.Logging;
 using EventFlow.Autofac.Extensions;
 using EventFlow.Configuration;
-using EventFlow.EventStores.EventStore.Extensions;
+using EventFlow.Core;
+using EventFlow.EventStores.EventStore;
+using EventFlow.Extensions;
 using EventFlow.Logs;
 using EventStore.ClientAPI;
+using EventStore.ClientAPI.SystemData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -25,6 +29,7 @@ using SN.Api.Server.Swagger;
 using SN.Api.Server.Swagger.Extensions;
 using ToDo.Api.Contract.ToDo;
 using ToDo.Api.Host.Auth;
+using ToDo.Api.Host.Doc;
 using ToDo.Api.Host.Jobs;
 using ToDo.Core.Module;
 using ToDo.ReadStore.EF.Module;
@@ -62,6 +67,7 @@ namespace ToDo.Api.Host
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ToDo.Api.Host", Version = "v1"});
                 c.IncludeXmlComments(typeof(IToDo).Assembly.DocumentationFilePath());
                 c.DocumentFilter<ApiServiceDocumentFilter>();
+                c.DocumentFilter<EventsDocumentFilter>();
             });
             services.AddHostedService<DBMigratorService>();
             services.AddHostedService<ModelPopulatorService>();
@@ -94,37 +100,62 @@ namespace ToDo.Api.Host
 
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
-            var builder = EventFlowOptions.New.UseAutofacContainerBuilder(containerBuilder);
+            var eventFlowOptions = EventFlowOptions.New.UseAutofacContainerBuilder(containerBuilder);
 
-            builder.AddAspNetCore(options =>
+            eventFlowOptions.Configure(configuration =>
+            {
+                configuration.PopulateReadModelEventPageSize = 1000;
+            });
+            eventFlowOptions.AddAspNetCore(options =>
             {
                 options.UseDefaults();
             });
-            builder.AddUserNameMetadata(ClaimTypes.NameIdentifier);
-            builder.RegisterServices(registration =>
+            eventFlowOptions.AddUserNameMetadata(ClaimTypes.NameIdentifier);
+            eventFlowOptions.RegisterServices(registration =>
             {
                 registration.Register<ILog, AspNetCoreLoggerLog>();
             });
 
+            var esConfig = _configuration.GetSection("EventStore:EventStoreDb");
+            var esUri = esConfig.GetValue<Uri>("ConnectionString");
+            var esUriBuilder = new UriBuilder(esUri);
+            var esHttpMessageHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = delegate { return true; }
+            };
+            var esUserCredentials = new UserCredentials(esUriBuilder.UserName, esUriBuilder.Password);
             var esSettings = ConnectionSettings.Create()
                                                .KeepRetrying()
                                                .KeepReconnecting()
-                                               //.EnableVerboseLogging()
-                                               //.DisableTls()
-                                               .UseConsoleLogger();
-            var esConfig = _configuration.GetSection("EventStore:EventStoreDb");
-            var esUri = esConfig.GetValue<Uri>("ConnectionString");
+                                               .UseConsoleLogger()
+                                               .SetDefaultUserCredentials(esUserCredentials)
+                                               .DisableServerCertificateValidation()
+                                               .UseCustomHttpMessageHandler(esHttpMessageHandler);
+
+            var esClusterSettings = ClusterSettings.Create()
+                                                   .DiscoverClusterViaDns()
+                                                   .KeepDiscovering()
+                                                   .SetMaxDiscoverAttempts(500)
+                                                   .SetClusterDns(esUri.Host);
             
-            builder.UseEventStoreEventStore(esUri, esSettings);
+            var connection = EventStoreConnection.Create(esSettings, esClusterSettings);
+
+            using (var bridge = AsyncHelper.Wait)
+            {
+                bridge.Run(connection.ConnectAsync());
+            }
+
+            eventFlowOptions.RegisterServices(f => f.Register(r => connection, Lifetime.Singleton));
+            eventFlowOptions.UseEventStore<EventStoreEventPersistence>();
             
-            builder.RegisterModule<ToDoDomainModule>();
-            builder.RegisterModule<ToDoStoreModule>();
+            eventFlowOptions.RegisterModule<ToDoDomainModule>();
+            eventFlowOptions.RegisterModule<ToDoStoreModule>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IResolver resolver)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsStaging())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();

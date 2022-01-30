@@ -17,8 +17,6 @@ services:
       EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: 'true'
     volumes:
       - ./data/eventstore/data:/var/lib/eventstore
-#  eventstore-read-01:
-#    image: eventstore/eventstore:release-5.0.10
   
   rabbitmq:
     image: rabbitmq:3-management

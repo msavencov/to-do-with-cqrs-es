@@ -5,6 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="EventFlow" Version="0.82.4659" />
+        <PackageReference Include="EventFlow" Version="0.83.4713" />
     </ItemGroup>
 </Project>

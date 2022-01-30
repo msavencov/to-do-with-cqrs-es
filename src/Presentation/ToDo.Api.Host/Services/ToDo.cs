@@ -100,7 +100,7 @@ namespace ToDo.Api.Host.Services
             var tasks = result.Select(t => new ToDoItem
             {
                 Id = t.Id, 
-                Task = t.Task, 
+                Task = t.Description, 
                 CreatedAt = t.CreatedAt, 
                 CreatedBy = t.CreatedBy,
                 ListId = t.ListId, 

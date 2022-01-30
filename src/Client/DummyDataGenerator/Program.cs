@@ -94,7 +94,7 @@ namespace DummyDataGenerator
                     var task = await toDoApi.NewTask(list.Id, taskDescription);
                 }
                 
-                Console.WriteLine($"Created list {listName} with {taskCount} tasks.");
+                Console.WriteLine($"Created list {lc}: {listName} with {taskCount} tasks.");
             }
         }
 
@@ -138,7 +138,7 @@ namespace DummyDataGenerator
             var accessTokenType = result.GetValue("token_type")?.ToString() ?? "Bearer";
             var apiClient = new HttpClient
             {
-                BaseAddress = new Uri("http://192.168.82.2:14900"),
+                BaseAddress = new Uri("https://localhost:14900"),
             };
             apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(accessTokenType, accessToken);
 

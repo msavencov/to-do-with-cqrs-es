@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Title>EventFlow.EventStores.EventStore</Title>
+    <Authors>Rasmus Mikkelsen</Authors>
+    <Company>Rasmus Mikkelsen</Company>
+    <Copyright>Copyright (c) Rasmus Mikkelsen 2015 - 2021</Copyright>
+    <Description>Event Store event store for EventFlow. Download it from https://geteventstore.com/</Description>
+    <PackageTags>CQRS ES event sourcing EventStore</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/eventflow/EventFlow</RepositoryUrl>
+    <PackageProjectUrl>https://docs.geteventflow.net/</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageReleaseNotes>UPDATED BY BUILD</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EventFlow" Version="0.83.4713" />
+    <PackageReference Include="EventStore.Client" Version="20.10.0" />
+  </ItemGroup>
+
+</Project>

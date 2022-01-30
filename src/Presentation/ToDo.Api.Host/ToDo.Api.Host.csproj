@@ -3,24 +3,24 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>421cfd32-ab03-42c3-8db7-34923c5ee27e</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-        
+        <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.0.2" />
-        <PackageReference Include="EventFlow" Version="0.82.4659" />
-        <PackageReference Include="EventFlow.Autofac" Version="0.82.4659" />
-        <PackageReference Include="EventFlow.AspNetCore" Version="0.82.4659" />
-        <PackageReference Include="EventFlow.DependencyInjection" Version="0.82.4659" />
-        <PackageReference Include="EventFlow.EventStores.EventStore" Version="0.82.4659" />
+        <PackageReference Include="EventFlow" Version="0.83.4713" />
+        <PackageReference Include="EventFlow.Autofac" Version="0.83.4713" />
+        <PackageReference Include="EventFlow.AspNetCore" Version="0.83.4713" />
+        <PackageReference Include="EventFlow.DependencyInjection" Version="0.83.4713" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8" />
         <PackageReference Include="SN.Api.Server" Version="21.6.4.6346" />
         <PackageReference Include="SN.Api.Server.Swagger" Version="21.6.4.6346" />
-        <PackageReference Include="EventStore.Client.Grpc.Streams" Version="20.10.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Infrastructure\EventFlow.EventStores.EventStore\EventFlow.EventStores.EventStore.csproj" />
       <ProjectReference Include="..\..\Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
       <ProjectReference Include="..\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
     </ItemGroup>

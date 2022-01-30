@@ -19,7 +19,6 @@ namespace ToDo.Api.Host.Jobs
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            return;
             var sw = Stopwatch.StartNew();
 
             Console.WriteLine($"Updating model {typeof(ToDoListReadModel)}");

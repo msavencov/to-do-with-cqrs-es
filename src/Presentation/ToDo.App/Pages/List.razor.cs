@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ToDo.Api.Contract.ToDo;
 using ToDo.Api.Contract.ToDo.Models;
+using ToDo.App.Extensions;
+using ToDo.App.Shared;
 
 namespace ToDo.App.Pages
 {
@@ -10,6 +12,8 @@ namespace ToDo.App.Pages
     {
         [Inject] public IToDo Api { get; private set; }
         [Inject] public NavigationManager NavigationManager { get; private set; }
+        
+        [CascadingParameter] public Error Error { get; set; }
         
         private ToDoListCollection Lists { get; set; }
         private ToDoItemCollection Tasks { get; set; }
@@ -19,7 +23,10 @@ namespace ToDo.App.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            Lists = await Api.GetAllLists();
+            Lists = await Api.CallSafeAsync(t => t.GetAllLists(), exception =>
+            {
+                Error.ProcessError(exception);
+            }) ?? new ToDoListCollection();
         }
 
         private async Task ListRowSelected(ToDoList arg)
