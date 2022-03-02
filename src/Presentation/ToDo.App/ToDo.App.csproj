@@ -9,10 +9,10 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.4" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.1.2" />
         <PackageReference Include="Radzen.Blazor" Version="3.7.3" />
-        <PackageReference Include="SN.Api.Client" Version="21.6.4.6346" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Client\ToDo.Api.Client\ToDo.Api.Client.csproj" />
       <ProjectReference Include="..\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
     </ItemGroup>
     

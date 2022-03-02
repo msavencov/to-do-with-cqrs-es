@@ -8,7 +8,7 @@ using ToDo.ReadStore.ToDo;
 
 namespace ToDo.Api.Host.Jobs
 {
-    public class ModelPopulatorService : IHostedService
+    internal class ModelPopulatorService : IHostedService
     {
         private readonly IReadModelPopulator _modelPopulator;
 

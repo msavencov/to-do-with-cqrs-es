@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ToDo.Api.Host.Auth
 {
-    public static class UserNameMetadataProviderExtensions
+    internal static class UserNameMetadataProviderExtensions
     {
         public static IEventFlowOptions AddUserNameMetadata(this IEventFlowOptions options, string userNameClaimType)
         {

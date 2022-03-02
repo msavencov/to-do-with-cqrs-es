@@ -1,8 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using ToDo.Api.Contract.ToDo;
-using ToDo.Api.Contract.ToDo.Models;
+using ToDo.Api.Client.ToDoApi.Services;
+using ToDo.Api.Contract.List.Models;
+using ToDo.Api.Contract.List.Operations;
+using ToDo.Api.Contract.Tasks.Models;
+using ToDo.Api.Contract.Tasks.Operations;
 using ToDo.App.Extensions;
 using ToDo.App.Shared;
 
@@ -10,7 +13,8 @@ namespace ToDo.App.Pages
 {
     public partial class List
     {
-        [Inject] public IToDo Api { get; private set; }
+        [Inject] public IListApi ListApi { get; private set; }
+        [Inject] public IToDoApi TaskApi { get; private set; }
         [Inject] public NavigationManager NavigationManager { get; private set; }
         
         [CascadingParameter] public Error Error { get; set; }
@@ -23,7 +27,7 @@ namespace ToDo.App.Pages
 
         protected override async Task OnParametersSetAsync()
         {
-            Lists = await Api.CallSafeAsync(t => t.GetAllLists(), exception =>
+            Lists = await ListApi.CallSafeAsync(t => t.FindListsAsync(new FindLists()), exception =>
             {
                 Error.ProcessError(exception);
             }) ?? new ToDoListCollection();
@@ -44,7 +48,10 @@ namespace ToDo.App.Pages
 
         private async Task ReloadTasks(string listId)
         {
-            Tasks = await Api.GetTasks(listId);
+            Tasks = await ListApi.GetTasksAsync(new GetTasks
+            {
+                ListId = listId
+            });
         }
 
         private void OnListAdd(MouseEventArgs obj)
@@ -56,11 +63,18 @@ namespace ToDo.App.Pages
         {
             if (SelectedList.Id is not null)
             {
-                await Api.UpdateListName(SelectedList.Id, SelectedList.Name);
+                await ListApi.RenameListAsync(new RenameList
+                {
+                    Id = SelectedList.Id, 
+                    Name = SelectedList.Name,
+                });
             }
             else
             {
-                await Api.NewList(SelectedList.Name);
+                await ListApi.CreateListAsync(new CreateList
+                {
+                    Name = SelectedList.Name
+                });
             }
         }
 
@@ -71,7 +85,11 @@ namespace ToDo.App.Pages
         
         private async Task OnItemSaved(MouseEventArgs obj)
         {
-            await Api.NewTask(SelectedList.Id, SelectedItem.Task);
+            await TaskApi.AddTaskAsync(new AddTask
+            {
+                ListId = SelectedList.Id,
+                Task = SelectedItem.Task,
+            });
         }
     }
 }

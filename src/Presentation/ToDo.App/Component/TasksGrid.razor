@@ -1,5 +1,5 @@
-﻿@using Api.Contract.ToDo.Models
-
+﻿@using ToDo.Api.Contract.List.Models
+@using ToDo.Api.Contract.Tasks.Models
 <RadzenDataGrid TItem="ToDoItem" Count="@(Tasks?.Count ?? 0)" Data="@Tasks"
                 AllowPaging="true" PageSize="18">
     <Columns>

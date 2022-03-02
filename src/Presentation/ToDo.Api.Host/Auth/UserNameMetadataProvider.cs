@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ToDo.Api.Host.Auth
 {
-    public class UserNameMetadataProvider : IMetadataProvider
+    internal class UserNameMetadataProvider : IMetadataProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserNameMetadataProviderOptions _options;

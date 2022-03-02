@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <TargetFramework>net6.0</TargetFramework>
         <UserSecretsId>421cfd32-ab03-42c3-8db7-34923c5ee27e</UserSecretsId>
+        <MSBuildWarningsAsErrors>CS8785</MSBuildWarningsAsErrors>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,15 +16,36 @@
         <PackageReference Include="EventFlow.AspNetCore" Version="0.83.4713" />
         <PackageReference Include="EventFlow.DependencyInjection" Version="0.83.4713" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8" />
-        <PackageReference Include="SN.Api.Server" Version="21.6.4.6346" />
-        <PackageReference Include="SN.Api.Server.Swagger" Version="21.6.4.6346" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.7" />
+        <PackageReference Include="MS.RestApi.Server" Version="0.1.0-preview-5" />
+        <PackageReference Include="MS.RestApi.SourceGenerator" Version="0.1.0-preview-5" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="MediatR" Version="10.0.1" PrivateAssets="compile" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Infrastructure\EventFlow.EventStores.EventStore\EventFlow.EventStores.EventStore.csproj" />
-      <ProjectReference Include="..\..\Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
-      <ProjectReference Include="..\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
+        <ProjectReference Include="..\..\Domain\ToDo.Service\ToDo.Service.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\EventFlow.EventStores.EventStore\EventFlow.EventStores.EventStore.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
+        <ProjectReference Include="..\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Services\ToDo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <CompilerVisibleProperty Include="ApiGenApiName" />
+        <CompilerVisibleProperty Include="ApiGenAssemblyToScan" />
+        <CompilerVisibleProperty Include="ApiGenGenerateControllers" />
+        <CompilerVisibleProperty Include="ApiGenUseMediatorHandlers" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+        <ApiGenApiName>ToDoApi</ApiGenApiName>
+        <ApiGenAssemblyToScan>ToDo.Api.Contract</ApiGenAssemblyToScan>
+        <ApiGenGenerateControllers>true</ApiGenGenerateControllers>
+        <ApiGenUseMediatorHandlers>true</ApiGenUseMediatorHandlers>
+    </PropertyGroup>
 
 </Project>

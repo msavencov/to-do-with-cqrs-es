@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <MSBuildWarningsAsErrors>CS8785</MSBuildWarningsAsErrors>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+        <PackageReference Include="MS.RestApi.Client" Version="0.1.0-preview-5" />
+        <PackageReference Include="MS.RestApi.SourceGenerator" Version="0.1.0-preview-5" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Presentation\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <CompilerVisibleProperty Include="ApiGenApiName" />
+        <CompilerVisibleProperty Include="ApiGenRootNamespace" />
+        <CompilerVisibleProperty Include="ApiGenAssemblyToScan" />
+        <CompilerVisibleProperty Include="ApiGenGenerateClient" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+        <ApiGenApiName>ToDoApi</ApiGenApiName>
+        <ApiGenRootNamespace>ToDo.Api.Client</ApiGenRootNamespace>
+        <ApiGenAssemblyToScan>ToDo.Api.Contract</ApiGenAssemblyToScan>
+        <ApiGenGenerateClient>true</ApiGenGenerateClient>
+    </PropertyGroup>
+</Project>

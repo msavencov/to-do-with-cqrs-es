@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Autofac;
 using EventFlow;
 using EventFlow.AspNetCore.Extensions;
@@ -23,20 +27,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SN.Api.Server;
-using SN.Api.Server.Common;
-using SN.Api.Server.Swagger;
-using SN.Api.Server.Swagger.Extensions;
-using ToDo.Api.Contract.ToDo;
+using MS.RestApi.Server;
+using MS.RestApi.Server.Swagger;
 using ToDo.Api.Host.Auth;
 using ToDo.Api.Host.Doc;
 using ToDo.Api.Host.Jobs;
+using ToDo.Api.Host.Utils;
 using ToDo.Core.Module;
 using ToDo.ReadStore.EF.Module;
+using ToDo.Service;
 
 namespace ToDo.Api.Host
 {
-    public class Startup
+    internal class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -47,30 +50,55 @@ namespace ToDo.Api.Host
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IApiServiceProvider>(_ =>
-                    {
-                        return new DefaultApiServiceProvider(new[]
-                        {
-                            typeof(IToDo)
-                        });
-                    })
-                    .AddMvcCore()
-                    .AddApiServices();
+            services.AddControllers();
+            services.AddApiMvcOptions();
+            services.AddEndpointsApiExplorer();
             
             ConfigureAuthentication(services);
             
-            services.AddScoped<IToDo, Services.ToDo>();
-            
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ToDo.Api.Host", Version = "v1"});
-                c.IncludeXmlComments(typeof(IToDo).Assembly.DocumentationFilePath());
-                c.DocumentFilter<ApiServiceDocumentFilter>();
+                c.CustomSchemaIds(type => type.FullName);
                 c.DocumentFilter<EventsDocumentFilter>();
+
+                var docs = new[]
+                {
+                    XDocument.Load(typeof(Contract.ServiceModule).Assembly.DocumentationFilePath()),
+                    XDocument.Load(typeof(Startup).Assembly.DocumentationFilePath()),
+                }.ReplaceInheritedComments();
+                
+                foreach (var doc in docs)
+                {
+                    c.IncludeXmlComments(() => new XPathDocument(doc.CreateReader()));
+                }
+                
+                var authority = _configuration.GetValue<string>("Auth:OIDC:Authority");
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OpenIdConnect,
+                    OpenIdConnectUrl = new Uri($"{authority}/.well-known/openid-configuration"),
+                    Flows = new OpenApiOAuthFlows()
+                    {
+                        Implicit = new OpenApiOAuthFlow()
+                        {
+                            Scopes = new Dictionary<string, string>
+                            {
+                                { "openid", "openid" },
+                                { "email", "email" },
+                                { "roles", "roles" },
+                                { "profile", "profile" },
+                            }
+                        }
+                    }
+                };
+                c.AddSecurityDefinition("oidc", securityScheme);
             });
-            services.AddHostedService<DBMigratorService>();
-            services.AddHostedService<ModelPopulatorService>();
+
+            services.AddToDoApplication();
+            
+            //services.AddHostedService<DBMigratorService>();
+            //services.AddHostedService<ModelPopulatorService>();
         }
 
         private void ConfigureAuthentication(IServiceCollection services)
@@ -140,7 +168,9 @@ namespace ToDo.Api.Host
             
             var connection = EventStoreConnection.Create(esSettings, esClusterSettings);
 
+#pragma warning disable CS0618
             using (var bridge = AsyncHelper.Wait)
+#pragma warning restore CS0618
             {
                 bridge.Run(connection.ConnectAsync());
             }

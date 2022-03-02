@@ -7,7 +7,7 @@ using ToDo.ReadStore.EF;
 
 namespace ToDo.Api.Host.Jobs
 {
-    public class DBMigratorService : IHostedService
+    internal class DBMigratorService : IHostedService
     {
         private readonly IDbContextProvider<ToDoContext> _contextProvider;
         

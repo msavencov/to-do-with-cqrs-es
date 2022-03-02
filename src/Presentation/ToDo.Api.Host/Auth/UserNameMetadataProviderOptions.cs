@@ -1,6 +1,6 @@
 ﻿namespace ToDo.Api.Host.Auth
 {
-    public class UserNameMetadataProviderOptions
+    internal class UserNameMetadataProviderOptions
     {
         public string UserNameClaimType { get; set; }
     }

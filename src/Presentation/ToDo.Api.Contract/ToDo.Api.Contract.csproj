@@ -6,7 +6,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-       <PackageReference Include="SN.Api.Common" Version="21.6.4.6346" />
+       <PackageReference Include="MediatR" Version="10.0.1" PrivateAssets="compile" />
+       <PackageReference Include="MS.RestApi" Version="0.1.0-preview-5" />
+       <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
 
 </Project>

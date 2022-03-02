@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Bogus;
-using DummyDataGenerator.Data;
+using DummyDataGenerator.Api;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using ToDo.Api.Contract.ToDo;
+using ToDo.Api.Client;
+using ToDo.Api.Client.Infrastructure;
 
 namespace DummyDataGenerator
 {
@@ -16,8 +19,20 @@ namespace DummyDataGenerator
     //dotnet publish -c Release -r win-x64 /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true -o ..\build\console
     class Program
     {
-        private static ToDoApiProxyFactory _apiProxyFactory;
-        
+        private static IServiceProvider ServiceProvider; 
+        static Program()
+        {
+            ServiceProvider = BuildServiceProvider(new ServiceCollection());
+        }
+
+        private static IServiceProvider BuildServiceProvider(ServiceCollection services)
+        {
+            services.AddToDoApiClient();
+            services.AddScoped<IAccessTokenAccessor, AccessTokenAccessor>();
+            
+            return services.BuildServiceProvider();
+        }
+
         static async Task Main(string[] args)
         {
             await Authorize();
@@ -100,6 +115,13 @@ namespace DummyDataGenerator
 
         private static async Task Authorize()
         {
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var ta = scope.ServiceProvider.GetRequiredService<IAccessTokenAccessor>();
+                var th = new JwtSecurityTokenHandler();
+                var jwt = th.ReadToken(ta.AccessToken);
+                
+            }
             string content;
             
             if (File.Exists("token"))
