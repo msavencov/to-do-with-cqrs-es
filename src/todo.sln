@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventFlow.EventStores.Event
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Api.Client", "Client\ToDo.Api.Client\ToDo.Api.Client.csproj", "{9139B580-2378-4B7E-8BB9-1664BA90E144}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Service.Tests", "ToDo.Service.Tests\ToDo.Service.Tests.csproj", "{43C6A2C9-319B-4551-8FCE-02863D03E282}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo.Service.Tests", "Domain\ToDo.Service.Tests\ToDo.Service.Tests.csproj", "{43C6A2C9-319B-4551-8FCE-02863D03E282}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
