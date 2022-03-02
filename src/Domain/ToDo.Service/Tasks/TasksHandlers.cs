@@ -53,5 +53,14 @@ namespace ToDo.Service.Tasks
             
             return Unit.Value;
         }
+        
+        public async Task<Unit> Handle(RenameTask request, CancellationToken cancellationToken)
+        {
+            var itemId = ToDoItemId.With(request.TaskId);
+            var cmd = new Core.Item.Commands.RenameToDoItem(itemId, request.NewName);
+            var result = await _commandBus.PublishAsync(cmd, default);
+            
+            return Unit.Value;
+        }
     }
 }

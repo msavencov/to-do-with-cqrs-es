@@ -13,6 +13,7 @@ namespace ToDo.ReadStore.ToDo
         , IAmAsyncReadModelFor<ToDoItem, ToDoItemId, ToDoItemCreated>
         , IAmAsyncReadModelFor<ToDoItem, ToDoItemId, ToDoItemCompleted>
         , IAmAsyncReadModelFor<ToDoItem, ToDoItemId, ToDoItemDeleted>
+        , IAmAsyncReadModelFor<ToDoItem, ToDoItemId, ToDoItemRenamed>
     {
         public string Id { get; set; }
         public string ListId { get; set; }
@@ -43,6 +44,13 @@ namespace ToDo.ReadStore.ToDo
         public Task ApplyAsync(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemDeleted> domainEvent, CancellationToken cancellationToken)
         {
             IsDeleted = true;
+            
+            return Task.CompletedTask;
+        }
+
+        public Task ApplyAsync(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemRenamed> domainEvent, CancellationToken cancellationToken)
+        {
+            Description = domainEvent.AggregateEvent.NewName;
             
             return Task.CompletedTask;
         }

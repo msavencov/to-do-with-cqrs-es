@@ -42,6 +42,11 @@ namespace ToDo.Core.Item
             Emit(new ToDoItemDeleted(Id, _listId));
         } 
             
+        public void Rename(string taskName)
+        {
+            Emit(new ToDoItemRenamed(Id, taskName));
+        }
+        
         internal void Apply(ToDoItemCompleted _)
         {
             _state = TaskItemState.Complete;
