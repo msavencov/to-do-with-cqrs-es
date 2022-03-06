@@ -37,7 +37,7 @@ namespace ToDo.App
             
             services.AddToDoApiClient(options =>
             {
-                options.BaseAddress = new Uri("http://192.168.82.2:14900");
+                options.BaseAddress = new Uri("http://localhost:14900");
             });
             services.AddScoped<TokenProvider>();
             services.AddScoped<IAccessTokenAccessor, AccessTokenAccessor>();

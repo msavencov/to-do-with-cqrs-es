@@ -55,7 +55,104 @@ namespace ToDo.Api.Host
             services.AddEndpointsApiExplorer();
             
             ConfigureAuthentication(services);
+            ConfigureSwagger(services);
             
+            services.AddToDoApplication();
+            
+            //services.AddHostedService<DBMigratorService>();
+            //services.AddHostedService<ModelPopulatorService>();
+        }
+
+        public void ConfigureContainer(ContainerBuilder containerBuilder)
+        {
+            var eventFlowOptions = EventFlowOptions.New.UseAutofacContainerBuilder(containerBuilder);
+
+            eventFlowOptions.Configure(configuration =>
+            {
+                configuration.PopulateReadModelEventPageSize = 1000;
+            });
+            eventFlowOptions.AddAspNetCore(options =>
+            {
+                options.UseDefaults();
+            });
+            eventFlowOptions.AddUserNameMetadata(ClaimTypes.NameIdentifier);
+            eventFlowOptions.RegisterServices(registration =>
+            {
+                registration.Register<ILog, AspNetCoreLoggerLog>();
+            });
+            
+            var esConfig = _configuration.GetSection("EventStore:EventStoreDb");
+            var esUri = esConfig.GetValue<Uri>("ConnectionString");
+            var esUriBuilder = new UriBuilder(esUri);
+            var esHttpMessageHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = delegate { return true; }
+            };
+            var esUserCredentials = new UserCredentials(esUriBuilder.UserName, esUriBuilder.Password);
+            var esSettings = ConnectionSettings.Create()
+                                               .KeepRetrying()
+                                               .KeepReconnecting()
+                                               .UseConsoleLogger()
+                                               .SetDefaultUserCredentials(esUserCredentials)
+                                               .DisableServerCertificateValidation()
+                                               .UseCustomHttpMessageHandler(esHttpMessageHandler);
+            var esConnection = default(IEventStoreConnection);
+            
+            switch (esUriBuilder.Scheme)
+            {
+                case "tcp":
+                    esConnection =  EventStoreConnection.Create(esSettings, esUri);
+                    break;
+                case "esdb+discover":
+                {
+                    var esClusterSettings = ClusterSettings.Create()
+                                                           .DiscoverClusterViaDns()
+                                                           .KeepDiscovering()
+                                                           .SetMaxDiscoverAttempts(500)
+                                                           .SetClusterDns(esUri.Host);
+                    esConnection = EventStoreConnection.Create(esSettings, esClusterSettings);
+                    break;
+                }
+                default:
+                    throw new Exception("Unable to build EventStoreDB connection. Please, configure EventStoreDB connection in 'EventStore:EventStoreDb:ConnectionString' with tcp or esdb+discover scheme.");
+            }
+
+            esConnection.ConnectAsync().GetAwaiter().GetResult();
+            
+            eventFlowOptions.RegisterServices(f => f.Register(r => esConnection, Lifetime.Singleton));
+            eventFlowOptions.UseEventStore<EventStoreEventPersistence>();
+            
+            eventFlowOptions.RegisterModule<ToDoDomainModule>();
+            eventFlowOptions.RegisterModule<ToDoStoreModule>();
+        }
+
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        _configuration.GetSection("Auth:OIDC").Bind(options);
+
+                        options.TokenValidationParameters.ValidateAudience = false;
+                        
+                        options.TokenValidationParameters.NameClaimType = ClaimTypes.NameIdentifier;
+                        options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
+                    });
+            services.Configure<MvcOptions>(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                             .RequireAuthenticatedUser()
+                             .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+        }
+
+        private void ConfigureSwagger(IServiceCollection services)
+        {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "ToDo.Api.Host", Version = "v1"});
@@ -94,92 +191,6 @@ namespace ToDo.Api.Host
                 };
                 c.AddSecurityDefinition("oidc", securityScheme);
             });
-
-            services.AddToDoApplication();
-            
-            //services.AddHostedService<DBMigratorService>();
-            //services.AddHostedService<ModelPopulatorService>();
-        }
-
-        private void ConfigureAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-                    {
-                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
-                    .AddJwtBearer(options =>
-                    {
-                        _configuration.GetSection("Auth:OIDC").Bind(options);
-
-                        options.TokenValidationParameters.ValidateAudience = false;
-                        
-                        options.TokenValidationParameters.NameClaimType = ClaimTypes.NameIdentifier;
-                        options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
-                    });
-            services.Configure<MvcOptions>(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                             .RequireAuthenticatedUser()
-                             .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
-            });
-        }
-
-        public void ConfigureContainer(ContainerBuilder containerBuilder)
-        {
-            var eventFlowOptions = EventFlowOptions.New.UseAutofacContainerBuilder(containerBuilder);
-
-            eventFlowOptions.Configure(configuration =>
-            {
-                configuration.PopulateReadModelEventPageSize = 1000;
-            });
-            eventFlowOptions.AddAspNetCore(options =>
-            {
-                options.UseDefaults();
-            });
-            eventFlowOptions.AddUserNameMetadata(ClaimTypes.NameIdentifier);
-            eventFlowOptions.RegisterServices(registration =>
-            {
-                registration.Register<ILog, AspNetCoreLoggerLog>();
-            });
-
-            var esConfig = _configuration.GetSection("EventStore:EventStoreDb");
-            var esUri = esConfig.GetValue<Uri>("ConnectionString");
-            var esUriBuilder = new UriBuilder(esUri);
-            var esHttpMessageHandler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = delegate { return true; }
-            };
-            var esUserCredentials = new UserCredentials(esUriBuilder.UserName, esUriBuilder.Password);
-            var esSettings = ConnectionSettings.Create()
-                                               .KeepRetrying()
-                                               .KeepReconnecting()
-                                               .UseConsoleLogger()
-                                               .SetDefaultUserCredentials(esUserCredentials)
-                                               .DisableServerCertificateValidation()
-                                               .UseCustomHttpMessageHandler(esHttpMessageHandler);
-
-            var esClusterSettings = ClusterSettings.Create()
-                                                   .DiscoverClusterViaDns()
-                                                   .KeepDiscovering()
-                                                   .SetMaxDiscoverAttempts(500)
-                                                   .SetClusterDns(esUri.Host);
-            
-            var connection = EventStoreConnection.Create(esSettings, esClusterSettings);
-
-#pragma warning disable CS0618
-            using (var bridge = AsyncHelper.Wait)
-#pragma warning restore CS0618
-            {
-                bridge.Run(connection.ConnectAsync());
-            }
-
-            eventFlowOptions.RegisterServices(f => f.Register(r => connection, Lifetime.Singleton));
-            eventFlowOptions.UseEventStore<EventStoreEventPersistence>();
-            
-            eventFlowOptions.RegisterModule<ToDoDomainModule>();
-            eventFlowOptions.RegisterModule<ToDoStoreModule>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
