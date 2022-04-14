@@ -14,14 +14,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Presentation\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <CompilerVisibleProperty Include="ApiGenApiName" />
         <CompilerVisibleProperty Include="ApiGenRootNamespace" />
         <CompilerVisibleProperty Include="ApiGenAssemblyToScan" />
         <CompilerVisibleProperty Include="ApiGenGenerateClient" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
     </ItemGroup>
     
     <PropertyGroup>

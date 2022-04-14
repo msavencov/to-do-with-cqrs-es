@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.Queries;
-using ToDo.Infrastructure.ReadStores;
+using ToDo.ReadStore.Abstractions.ReadStores;
 using ToDo.ReadStore.Lists;
 using ToDo.ReadStore.Lists.Queries;
 

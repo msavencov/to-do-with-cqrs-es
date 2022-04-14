@@ -10,7 +10,7 @@ using EventFlow.EntityFramework.ReadStores;
 using EventFlow.ReadStores;
 using Microsoft.EntityFrameworkCore;
 
-namespace ToDo.Infrastructure.ReadStores
+namespace ToDo.ReadStore.Abstractions.ReadStores
 {
     public class EfSearchableReadStore<TReadModel, TDbContext> : ISearchableReadModelStore<TReadModel> where TReadModel : class, IReadModel, new() where TDbContext : DbContext
     {

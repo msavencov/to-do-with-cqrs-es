@@ -4,7 +4,7 @@ using EventFlow.EntityFramework;
 using EventFlow.EntityFramework.Extensions;
 using EventFlow.Extensions;
 using EventFlow.ReadStores;
-using ToDo.Infrastructure.ReadStores;
+using ToDo.ReadStore.Abstractions.ReadStores;
 using ToDo.ReadStore.Items;
 using ToDo.ReadStore.Lists;
 

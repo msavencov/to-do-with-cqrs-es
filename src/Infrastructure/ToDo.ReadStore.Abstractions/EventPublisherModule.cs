@@ -1,7 +1,7 @@
 ﻿using EventFlow;
 using EventFlow.Configuration;
 
-namespace ToDo.Infrastructure
+namespace ToDo.ReadStore.Abstractions
 {
     public class EventPublisherModule : IModule
     {

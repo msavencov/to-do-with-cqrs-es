@@ -9,9 +9,8 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\Presentation\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
-      <ProjectReference Include="..\ToDo.Core\ToDo.Core.csproj" />
-      <ProjectReference Include="..\ToDo.ReadStore\ToDo.ReadStore.csproj" />
+      <ProjectReference Include="..\Api\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
+      <ProjectReference Include="..\Domain\ToDo.ReadStore\ToDo.ReadStore.csproj" />
     </ItemGroup>
     
 </Project>

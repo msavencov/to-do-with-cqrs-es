@@ -7,7 +7,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Domain\ToDo.Core\ToDo.Core.csproj" />
       <ProjectReference Include="..\..\Domain\ToDo.ReadStore\ToDo.ReadStore.csproj" />
-      <ProjectReference Include="..\ToDo.Infrastructure\ToDo.Infrastructure.csproj" />
+      <ProjectReference Include="..\ToDo.ReadStore.Abstractions\ToDo.ReadStore.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>

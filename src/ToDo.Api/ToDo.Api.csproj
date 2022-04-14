@@ -24,10 +24,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Domain\ToDo.Service\ToDo.Service.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\EventFlow.EventStores.EventStore\EventFlow.EventStores.EventStore.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
-        <ProjectReference Include="..\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
+        <ProjectReference Include="..\Api\ToDo.Api.Contract\ToDo.Api.Contract.csproj" />
+        <ProjectReference Include="..\Domain\ToDo.Core\ToDo.Core.csproj" />
+        <ProjectReference Include="..\Domain\ToDo.ReadStore\ToDo.ReadStore.csproj" />
+        <ProjectReference Include="..\Infrastructure\EventFlow.EventStores.EventStore\EventFlow.EventStores.EventStore.csproj" />
+        <ProjectReference Include="..\Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
+        <ProjectReference Include="..\ToDo.Api.Services\ToDo.Api.Services.csproj" />
     </ItemGroup>
     
 </Project>

@@ -7,7 +7,7 @@ using EventFlow.Logs;
 using EventFlow.ReadStores;
 using EventFlow.ReadStores.InMemory;
 
-namespace ToDo.Infrastructure.ReadStores
+namespace ToDo.ReadStore.Abstractions.ReadStores
 {
     public class InMemorySearchableReadStore<TReadModel> : InMemoryReadStore<TReadModel>, ISearchableReadModelStore<TReadModel> where TReadModel : class, IReadModel, new()
     {

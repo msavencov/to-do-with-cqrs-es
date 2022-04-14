@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.ReadStores;
 
-namespace ToDo.Infrastructure.ReadStores
+namespace ToDo.ReadStore.Abstractions.ReadStores
 {
     public interface ISearchableReadModelStore<TReadModel> : IReadModelStore<TReadModel> where TReadModel : class, IReadModel, new()
     {
