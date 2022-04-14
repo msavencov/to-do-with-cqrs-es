@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using ToDo.ReadStore.EF;
 
-namespace ToDo.Api.Host.Jobs
+namespace ToDo.Api.Jobs
 {
     internal class DBMigratorService : IHostedService
     {

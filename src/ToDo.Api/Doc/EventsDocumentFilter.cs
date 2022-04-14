@@ -4,7 +4,7 @@ using EventFlow.Aggregates;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ToDo.Api.Host.Doc
+namespace ToDo.Api.Doc
 {
     internal class EventsDocumentFilter : IDocumentFilter
     {

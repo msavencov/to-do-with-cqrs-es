@@ -12,7 +12,7 @@ using ToDo.Core.Item.Commands;
 using ToDo.Core.List;
 using ToDo.ReadStore.Items.Queries;
 
-namespace ToDo.Service.Tasks
+namespace ToDo.Api.Services.Tasks
 {
     public sealed class TasksService : Api.Contract.Tasks.TasksService.TasksServiceBase
     {

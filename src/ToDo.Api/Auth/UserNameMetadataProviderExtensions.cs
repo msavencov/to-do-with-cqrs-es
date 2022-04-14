@@ -3,7 +3,7 @@ using EventFlow.Configuration;
 using EventFlow.Extensions;
 using Microsoft.AspNetCore.Http;
 
-namespace ToDo.Api.Host.Auth
+namespace ToDo.Api.Auth
 {
     internal static class UserNameMetadataProviderExtensions
     {

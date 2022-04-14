@@ -1,5 +1,4 @@
 ﻿using EventFlow.Commands;
-using EventFlow.Core;
 
 namespace ToDo.Core.Item.Commands
 {

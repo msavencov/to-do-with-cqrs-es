@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace ToDo.Service
+namespace ToDo.Api.Services
 {
     public static class ServicesModuleExtensions
     {

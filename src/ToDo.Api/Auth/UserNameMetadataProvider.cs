@@ -5,7 +5,7 @@ using EventFlow.Core;
 using EventFlow.EventStores;
 using Microsoft.AspNetCore.Http;
 
-namespace ToDo.Api.Host.Auth
+namespace ToDo.Api.Auth
 {
     internal class UserNameMetadataProvider : IMetadataProvider
     {

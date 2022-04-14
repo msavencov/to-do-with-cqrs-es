@@ -1,4 +1,4 @@
-﻿namespace ToDo.Api.Host.Auth
+﻿namespace ToDo.Api.Auth
 {
     internal class UserNameMetadataProviderOptions
     {

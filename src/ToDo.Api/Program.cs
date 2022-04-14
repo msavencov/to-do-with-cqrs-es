@@ -2,7 +2,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace ToDo.Api.Host
+namespace ToDo.Api
 {
     internal class Program
     {
@@ -12,7 +12,7 @@ namespace ToDo.Api.Host
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+            Host.CreateDefaultBuilder(args)
                      .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                      .ConfigureWebHostDefaults(webBuilder =>
                      {

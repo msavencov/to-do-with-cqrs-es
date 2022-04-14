@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using ToDo.ReadStore.Items;
 using ToDo.ReadStore.Lists;
 
-namespace ToDo.Api.Host.Jobs
+namespace ToDo.Api.Jobs
 {
     internal class ModelPopulatorService : IHostedService
     {

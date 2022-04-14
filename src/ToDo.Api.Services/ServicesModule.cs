@@ -2,7 +2,7 @@
 using EventFlow.Configuration;
 using EventFlow.Extensions;
 
-namespace ToDo.Service
+namespace ToDo.Api.Services
 {
     public class ServicesModule : IModule
     {

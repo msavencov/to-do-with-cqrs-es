@@ -8,10 +8,7 @@ using EventFlow.AspNetCore.Extensions;
 using EventFlow.AspNetCore.Logging;
 using EventFlow.Autofac.Extensions;
 using EventFlow.Configuration;
-using EventFlow.Core;
-using EventFlow.EventStores.EventStore;
 using EventFlow.EventStores.EventStore.Extensions;
-using EventFlow.Extensions;
 using EventFlow.Logs;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
@@ -25,17 +22,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using ToDo.Api.Host.Auth;
-using ToDo.Api.Host.Doc;
-using ToDo.Api.Host.Jobs;
-using ToDo.Api.Host.Utils;
+using ToDo.Api.Auth;
+using ToDo.Api.Contract;
+using ToDo.Api.Doc;
+using ToDo.Api.Jobs;
+using ToDo.Api.Services;
+using ToDo.Api.Services.List;
+using ToDo.Api.Services.Tasks;
+using ToDo.Api.Utils;
 using ToDo.Core.Module;
 using ToDo.ReadStore.EF.Module;
-using ToDo.Service;
-using ToDo.Service.List;
-using ToDo.Service.Tasks;
 
-namespace ToDo.Api.Host
+namespace ToDo.Api
 {
     internal class Startup
     {
@@ -137,7 +135,7 @@ namespace ToDo.Api.Host
                 c.CustomSchemaIds(type => type.FullName);
                 c.DocumentFilter<EventsDocumentFilter>();
 
-                c.IncludeXmlComments(typeof(Contract.ContractModule).Assembly.DocumentationFilePath());
+                c.IncludeXmlComments(typeof(ContractModule).Assembly.DocumentationFilePath());
                 c.IncludeXmlComments(typeof(Startup).Assembly.DocumentationFilePath());
                 
                 var authority = _configuration.GetValue<string>("Auth:OIDC:Authority");
@@ -145,9 +143,9 @@ namespace ToDo.Api.Host
                 {
                     Type = SecuritySchemeType.OpenIdConnect,
                     OpenIdConnectUrl = new Uri($"{authority}/.well-known/openid-configuration"),
-                    Flows = new OpenApiOAuthFlows()
+                    Flows = new OpenApiOAuthFlows
                     {
-                        Implicit = new OpenApiOAuthFlow()
+                        Implicit = new OpenApiOAuthFlow
                         {
                             Scopes = new Dictionary<string, string>
                             {

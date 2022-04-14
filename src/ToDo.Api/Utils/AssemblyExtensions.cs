@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace ToDo.Api.Host.Utils
+namespace ToDo.Api.Utils
 {
     internal static class AssemblyExtensions
     {

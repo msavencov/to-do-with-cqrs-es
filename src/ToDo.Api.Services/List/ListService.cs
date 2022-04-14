@@ -10,7 +10,7 @@ using ToDo.Core.List;
 using ToDo.Core.List.Commands;
 using ToDo.ReadStore.Lists.Queries;
 
-namespace ToDo.Service.List
+namespace ToDo.Api.Services.List
 {
     public class ListService : Api.Contract.Lists.ListService.ListServiceBase
     {
