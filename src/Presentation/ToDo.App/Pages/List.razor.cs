@@ -1,69 +1,70 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using ToDo.Api.Client.ToDoApi.Services;
-using ToDo.Api.Contract.List.Models;
-using ToDo.Api.Contract.List.Operations;
-using ToDo.Api.Contract.Tasks.Models;
-using ToDo.Api.Contract.Tasks.Operations;
-using ToDo.App.Extensions;
+using ToDo.Api.Contract.Lists;
+using ToDo.Api.Contract.Tasks;
 using ToDo.App.Shared;
+using AddRequest = ToDo.Api.Contract.Lists.AddRequest;
+using FindRequest = ToDo.Api.Contract.Tasks.FindRequest;
+using GetTaskRequest = ToDo.Api.Contract.Tasks.GetRequest;
+using GetListRequest = ToDo.Api.Contract.Lists.GetRequest;
+using RenameRequest = ToDo.Api.Contract.Lists.RenameRequest;
 
 namespace ToDo.App.Pages
 {
     public partial class List
     {
-        [Inject] public IListApi ListApi { get; private set; }
-        [Inject] public IToDoApi TaskApi { get; private set; }
+        [Inject] public ListService.ListServiceClient ListApi { get; private set; }
+        [Inject] public TasksService.TasksServiceClient TaskApi { get; private set; }
         [Inject] public NavigationManager NavigationManager { get; private set; }
         
         [CascadingParameter] public Error Error { get; set; }
         
-        private ToDoListCollection Lists { get; set; }
-        private ToDoItemCollection Tasks { get; set; }
+        private Api.Contract.Lists.FindRequest.Types.Response Lists { get; set; }
+        private Api.Contract.Tasks.FindRequest.Types.Response Tasks { get; set; }
         
-        private ToDoList SelectedList { get; set; }
-        private ToDoItem SelectedItem { get; set; }
+        private ListItem SelectedList { get; set; }
+        private TaskItem SelectedItem { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
-            Lists = await ListApi.CallSafeAsync(t => t.FindListsAsync(new FindLists()), exception =>
+            Lists = await ListApi.FindAsync(new Api.Contract.Lists.FindRequest
             {
-                Error.ProcessError(exception);
-            }) ?? new ToDoListCollection();
+
+            });
         }
 
-        private async Task ListRowSelected(ToDoList arg)
+        private async Task ListRowSelected(ListItem arg)
         {
             SelectedList = arg;
             
             await ReloadTasks(arg.Id);
         }
 
-        private void ListRowDeselected(ToDoList arg)
+        private void ListRowDeselected(ListItem arg)
         {
             SelectedList = null;
-            Tasks = new ToDoItemCollection();
+            Tasks = new FindRequest.Types.Response();
         }
 
         private async Task ReloadTasks(string listId)
         {
-            Tasks = await ListApi.GetTasksAsync(new GetTasks
+            Tasks = await TaskApi.FindAsync(new FindRequest
             {
-                ListId = listId
+                ListId = listId,
             });
         }
 
         private void OnListAdd(MouseEventArgs obj)
         {
-            SelectedList = new ToDoList();
+            SelectedList = new ListItem();
         }
 
         private async Task OnListSaved(MouseEventArgs arg)
         {
-            if (SelectedList.Id is not null)
+            if (SelectedList.Id is {Length: > 0})
             {
-                await ListApi.RenameListAsync(new RenameList
+                await ListApi.RenameAsync(new RenameRequest
                 {
                     Id = SelectedList.Id, 
                     Name = SelectedList.Name,
@@ -71,7 +72,7 @@ namespace ToDo.App.Pages
             }
             else
             {
-                await ListApi.CreateListAsync(new CreateList
+                await ListApi.AddAsync(new AddRequest()
                 {
                     Name = SelectedList.Name
                 });
@@ -80,15 +81,15 @@ namespace ToDo.App.Pages
 
         private void OnItemAdd(MouseEventArgs obj)
         {
-            SelectedItem = new ToDoItem();
+            SelectedItem = new TaskItem();
         }
         
         private async Task OnItemSaved(MouseEventArgs obj)
         {
-            await TaskApi.AddTaskAsync(new AddTask
+            await TaskApi.AddAsync(new Api.Contract.Tasks.AddRequest
             {
-                ListId = SelectedList.Id,
-                Task = SelectedItem.Task,
+                ListId = SelectedList.Id, 
+                Title = SelectedItem.Title,
             });
         }
     }

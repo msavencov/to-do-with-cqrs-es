@@ -1,35 +1,32 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using ToDo.Api.Client.ToDoApi.Client;
-using ToDo.Api.Client.ToDoApi.Services;
-using ToDo.Api.Contract.List;
-using ToDo.Api.Contract.List.Models;
-using ToDo.Api.Contract.Tasks.Models;
-using ToDo.Api.Contract.Tasks.Operations;
+using ToDo.Api.Contract.Lists;
+using ToDo.Api.Contract.Tasks;
 
 namespace ToDo.App.Component
 {
     public partial class TasksGrid
     {
-        [Inject] private IToDoApi Api { get; set; }
+        [Inject] private TasksService.TasksServiceClient Api { get; set; }
         
-        [Parameter] public ToDoList List { get; set; }
-        [Parameter] public ToDoItemCollection Tasks { get; set; }
+        [Parameter] public ListItem List { get; set; }
+        [Parameter] public Api.Contract.Tasks.FindRequest.Types.Response Tasks { get; set; }
 
-        private async Task TaskItemDone(ToDoItem item)
+        private async Task TaskItemDone(TaskItem item)
         {
-            await Api.CompleteTaskAsync(new CompleteTask
+            await Api.CompleteAsync(new CompleteRequest
             {
-                TaskId = item.Id,
+                Id = item.Id,
             });
         }
 
-        private async Task TaskItemDelete(ToDoItem item)
+        private async Task TaskItemDelete(TaskItem item)
         {
-            await Api.DeleteTaskAsync(new DeleteTask
+            await Api.DeleteAsync(new DeleteRequest
             {
-                TaskId = item.Id
+                Id = item.Id,
             });
         }
     }

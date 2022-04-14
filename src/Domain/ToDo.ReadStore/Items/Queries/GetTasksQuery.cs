@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using EventFlow.Queries;
+using ToDo.Core.Item;
 using ToDo.Core.List;
 
-namespace ToDo.ReadStore.ToDo.Queries
+namespace ToDo.ReadStore.Items.Queries
 {
     public class GetTasksQuery : IQuery<IEnumerable<ToDoItemReadModel>>
     {
-        public ToDoListId ListId { get; }
-
-        public GetTasksQuery(ToDoListId listId)
-        {
-            ListId = listId;
-        }
+        public ToDoItemId Id { get; init; }
+        public ToDoListId ListId { get; init; }
     }
 }

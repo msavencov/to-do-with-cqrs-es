@@ -5,7 +5,8 @@ using EventFlow.EntityFramework.Extensions;
 using EventFlow.Extensions;
 using EventFlow.ReadStores;
 using ToDo.Infrastructure.ReadStores;
-using ToDo.ReadStore.ToDo;
+using ToDo.ReadStore.Items;
+using ToDo.ReadStore.Lists;
 
 namespace ToDo.ReadStore.EF.Module
 {

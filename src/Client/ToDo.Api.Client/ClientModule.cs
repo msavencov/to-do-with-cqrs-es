@@ -1,36 +1,38 @@
 ﻿using System;
-using System.Net.Http;
+using Grpc.Net.ClientFactory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using ToDo.Api.Client.Auth;
 using ToDo.Api.Client.Configuration;
-using ToDo.Api.Client.Infrastructure;
-using ToDo.Api.Client.ToDoApi;
-using ToDo.Api.Client.ToDoApi.Extensions;
+using ToDo.Api.Contract.Lists;
+using ToDo.Api.Contract.Tasks;
 
 namespace ToDo.Api.Client
 {
     public static class ClientModule
     {
-        public static IServiceCollection AddToDoApiClient(this IServiceCollection services, Action<ToDoApiOptions> configureOptions)
+        private static TOptions GetRequiredOptions<TOptions>(this IServiceProvider provider) where TOptions : class
+        {
+            return provider.GetRequiredService<IOptions<TOptions>>().Value;
+        }
+        
+        public static IServiceCollection AddGrpcClient(this IServiceCollection services, Action<ToDoApiOptions> configureOptions)
         {
             services.Configure(configureOptions);
-            services.AddToDoApi(options =>
-            {
-                options.ServiceLifetime = ServiceLifetime.Scoped;
-            });
-            services.AddHttpClient<IToDoApiRequestHandler, ToDoApiRequestHandler>()
-                    .ConfigureHttpClient((provider, client) =>
+            
+            services.AddGrpcClient<TasksService.TasksServiceClient>((provider, options) =>
                     {
-                        client.BaseAddress = provider.GetRequiredService<IOptions<ToDoApiOptions>>().Value.BaseAddress;
+                        options.Address = provider.GetRequiredOptions<ToDoApiOptions>().BaseAddress;
                     })
-                    .ConfigurePrimaryHttpMessageHandler(provider =>
+                    .AddInterceptor<AuthInterceptor>(InterceptorScope.Client);
+            
+            services.AddGrpcClient<ListService.ListServiceClient>((provider, options) =>
                     {
-                        return new HttpClientHandler
-                        {
-                            ClientCertificateOptions = ClientCertificateOption.Manual,
-                            ServerCertificateCustomValidationCallback = delegate { return true; }
-                        };
-                    });
+                        options.Address = provider.GetRequiredOptions<ToDoApiOptions>().BaseAddress;
+                    })
+                    .AddInterceptor<AuthInterceptor>(InterceptorScope.Client);
+            
+            services.AddScoped<AuthInterceptor>();
             
             return services;
         }

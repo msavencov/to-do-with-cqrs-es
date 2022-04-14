@@ -1,0 +1,70 @@
+﻿syntax = "proto3";
+package TaskApi;
+
+option csharp_namespace = "ToDo.Api.Contract.Tasks";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "Api/common.proto";
+
+service TasksService {
+  rpc Add(AddRequest) returns (AddRequest.Response);
+  rpc Get(GetRequest) returns (GetRequest.Response);
+  rpc Find(FindRequest) returns (FindRequest.Response);
+  rpc Rename(RenameRequest) returns (google.protobuf.Empty);
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc Complete(CompleteRequest) returns (google.protobuf.Empty);
+}
+
+message RenameRequest {
+  string Id = 1;
+  string Title = 2;
+}
+
+message FindRequest {
+  optional string ListId = 2;
+  optional string Query = 1;
+  
+  common.Paging Paging = 10;
+  
+  message Response {
+    common.Paged Page = 1;
+    repeated TaskItem Items = 2;
+  }
+}
+
+message CompleteRequest {
+  string Id = 1;
+}
+
+message AddRequest {
+  string ListId = 1;
+  string Title = 2;
+
+  message Response {
+    string TaskId = 1;
+  }
+}
+
+message GetRequest {
+  string Id = 1;
+
+  message Response {
+    oneof Result {
+      bool NotFound = 1;
+      TaskItem Task = 2;
+    }
+  }
+}
+
+message DeleteRequest {
+  string Id = 1;
+}
+
+message TaskItem {
+  string Id = 1;
+  string ListId = 2;
+  string Title = 3;
+  google.protobuf.Timestamp CreatedAt = 4;
+  string CreatedBy = 5;
+  bool IsCompleted = 6;
+}

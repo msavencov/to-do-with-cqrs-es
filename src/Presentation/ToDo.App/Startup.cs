@@ -4,6 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
+using Grpc.Core;
+using Grpc.Core.Interceptors;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Radzen;
 using ToDo.Api.Client;
-using ToDo.Api.Client.Infrastructure;
+using ToDo.Api.Client.Auth;
 using ToDo.App.Auth;
 
 namespace ToDo.App
@@ -34,10 +37,9 @@ namespace ToDo.App
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage();
             
-            
-            services.AddToDoApiClient(options =>
+            services.AddGrpcClient(options =>
             {
-                options.BaseAddress = new Uri("http://localhost:14900");
+                options.BaseAddress = new Uri("https://localhost:28494");
             });
             services.AddScoped<TokenProvider>();
             services.AddScoped<IAccessTokenAccessor, AccessTokenAccessor>();
@@ -47,10 +49,10 @@ namespace ToDo.App
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
 
-            ConfigureAuthenticationServices(services);
+            AddAuthenticationServices(services);
         }
 
-        private void ConfigureAuthenticationServices(IServiceCollection services)
+        private void AddAuthenticationServices(IServiceCollection services)
         {
             services.AddAuthentication(options =>
                     {

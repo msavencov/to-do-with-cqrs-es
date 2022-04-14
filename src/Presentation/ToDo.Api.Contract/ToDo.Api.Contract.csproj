@@ -6,9 +6,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-       <PackageReference Include="MediatR" Version="10.0.1" PrivateAssets="compile" />
-       <PackageReference Include="MS.RestApi" Version="0.1.0-preview-5" />
        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.20.0" />
+        
+        <PackageReference Include="Grpc.Core" Version="2.45.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.45.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="./Api/common.proto" />
+        <Protobuf Include="./Api/task.proto" />
+        <Protobuf Include="./Api/list.proto" />
+    </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using ToDo.Api.Client.Infrastructure;
+﻿using ToDo.Api.Client.Auth;
 
 namespace ToDo.App.Auth
 {

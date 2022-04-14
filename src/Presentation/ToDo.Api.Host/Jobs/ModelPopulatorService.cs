@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.ReadStores;
 using Microsoft.Extensions.Hosting;
-using ToDo.ReadStore.ToDo;
+using ToDo.ReadStore.Items;
+using ToDo.ReadStore.Lists;
 
 namespace ToDo.Api.Host.Jobs
 {

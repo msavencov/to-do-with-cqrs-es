@@ -7,7 +7,7 @@ using EventFlow.ReadStores;
 using ToDo.Core.Item;
 using ToDo.Core.Item.Events;
 
-namespace ToDo.ReadStore.ToDo
+namespace ToDo.ReadStore.Items
 {
     public class ToDoItemReadModel : IReadModel
         , IAmAsyncReadModelFor<ToDoItem, ToDoItemId, ToDoItemCreated>

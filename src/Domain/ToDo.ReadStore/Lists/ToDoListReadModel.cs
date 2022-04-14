@@ -7,7 +7,7 @@ using ToDo.Core.Item.Events;
 using ToDo.Core.List;
 using ToDo.Core.List.Events;
 
-namespace ToDo.ReadStore.ToDo
+namespace ToDo.ReadStore.Lists
 {
     public class ToDoListReadModel : IReadModel
         , IAmReadModelFor<ToDoList, ToDoListId, ToDoListCreated>

@@ -25,7 +25,17 @@ namespace ToDo.Core.List
 
         public void ChangeName(string name)
         {
+            if (name == _name)
+            {
+                return;
+            }
+            
             Emit(new ListNameChanged(name));
+        }
+
+        public void Apply(ListNameChanged @event)
+        {
+            _name = @event.Name;
         }
     }
 }

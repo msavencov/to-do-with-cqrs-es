@@ -20,9 +20,7 @@ namespace ToDo.Api.Host.Auth
 
         public IEnumerable<KeyValuePair<string, string>> ProvideMetadata<TAggregate, TIdentity>(TIdentity id, IAggregateEvent aggregateEvent, IMetadata metadata) where TAggregate : IAggregateRoot<TIdentity> where TIdentity : IIdentity
         {
-            var user = _httpContextAccessor.HttpContext?.User;
-
-            if (user is { })
+            if (_httpContextAccessor.HttpContext is {User: { } user })
             {
                 yield return new KeyValuePair<string, string>("username", user.FindFirstValue(_options.UserNameClaimType));
             }

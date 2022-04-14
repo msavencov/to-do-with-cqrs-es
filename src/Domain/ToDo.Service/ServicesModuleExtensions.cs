@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ToDo.Service
 {
@@ -7,8 +6,6 @@ namespace ToDo.Service
     {
         public static IServiceCollection AddToDoApplication(this IServiceCollection services)
         {
-            services.AddMediatR(typeof(ServicesModuleExtensions).Assembly);
-            
             return services;
         }
     }

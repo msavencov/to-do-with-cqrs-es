@@ -1,22 +1,22 @@
-﻿@using ToDo.Api.Contract.List.Models
-@using ToDo.Api.Contract.Tasks.Models
-<RadzenDataGrid TItem="ToDoItem" Count="@(Tasks?.Count ?? 0)" Data="@Tasks"
+﻿@using ToDo.Api.Contract.Tasks
+
+<RadzenDataGrid TItem="TaskItem" Count="@(Tasks?.Items?.Count ?? 0)" Data="@(Tasks?.Items)"
                 AllowPaging="true" PageSize="18">
     <Columns>
-        <RadzenDataGridColumn TItem="ToDoItem" Property="CreatedAt" Title="Created At" Width="150px">
+        <RadzenDataGridColumn TItem="TaskItem" Property="CreatedAt" Title="Created At" Width="150px">
             <Template Context="item">
-                @item.CreatedAt.LocalDateTime.ToString("yyyy, MMM dd (HH:mm)")
+                @item.CreatedAt.ToDateTime().ToString("yyyy, MMM dd (HH:mm)")
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ToDoItem" Property="CreatedBy" Title="Created By" Width="150px"/>
-        <RadzenDataGridColumn TItem="ToDoItem" Title="Task">
+        <RadzenDataGridColumn TItem="TaskItem" Property="CreatedBy" Title="Created By" Width="150px"/>
+        <RadzenDataGridColumn TItem="TaskItem" Title="Task">
             <Template Context="item">
                 <p style="overflow: auto; white-space: initial;">
-                    @item.Task
+                    @item.Title
                 </p>
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ToDoItem">
+        <RadzenDataGridColumn TItem="TaskItem">
             <Template Context="item">
                 @if (item.IsCompleted == false)
                 {

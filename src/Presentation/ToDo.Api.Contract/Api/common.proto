@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+package common;
+option csharp_namespace = "ToDo.Api.Contract.Shared";
+
+message Paging {
+  int32 Page = 1;
+  int32 Size = 2;
+}
+
+message Paged {
+  int32 TotalRows = 1;
+}

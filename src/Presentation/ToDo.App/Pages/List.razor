@@ -1,5 +1,6 @@
 ﻿@page "/list"
-@using ToDo.Api.Contract.List.Models
+@using ToDo.Api.Contract.Lists
+@using Microsoft.AspNetCore.Components
 
 <div class="row">
     @if (SelectedList is not {})
@@ -26,23 +27,23 @@
 
 <div class="row">
     <div class="col-4">
-        <RadzenDataGrid TItem="ToDoList" Count="@(Lists?.Count ?? 0)" Data="@Lists"
+        <RadzenDataGrid TItem="ListItem" Count="@(Lists?.Result?.Count ?? 0)" Data="@Lists?.Result"
                         AllowPaging="true" PageSize="18"
                         AllowFiltering="true" FilterMode="FilterMode.Advanced" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                         RowSelect="ListRowSelected" RowDeselect="ListRowDeselected" SelectionMode="DataGridSelectionMode.Single"
                         AllowColumnResize="true">
             <Columns>
-                <RadzenDataGridColumn TItem="ToDoList" Property="Name" Title="Name"/>
-                <RadzenDataGridColumn TItem="ToDoList" Property="CreatedAt" Title="Created At">
+                <RadzenDataGridColumn TItem="ListItem" Property="Name" Title="Name"/>
+                <RadzenDataGridColumn TItem="ListItem" Property="CreatedAt" Title="Created At">
                     <Template Context="item">
-                        @item.CreatedAt.LocalDateTime.ToString("yyyy, MMM dd (HH:mm)")
+                        @item.CreatedAt.ToDateTime().ToString("yyyy, MMM dd (HH:mm)")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ToDoList" Property="CreatedBy" Title="Created By"/>
-                <RadzenDataGridColumn TItem="ToDoList" Title="#">
+                <RadzenDataGridColumn TItem="ListItem" Property="CreatedBy" Title="Created By"/>
+                <RadzenDataGridColumn TItem="ListItem" Title="#">
                     <Template Context="item">
-                        <RadzenBadge BadgeStyle="BadgeStyle.Primary" IsPill="true" Text="@item.TaskCount.ToString()"/>
-                        <RadzenBadge BadgeStyle="BadgeStyle.Danger" IsPill="true" Text="@item.ActiveTaskCount.ToString()"/>
+                        <RadzenBadge BadgeStyle="BadgeStyle.Primary" IsPill="true" Text="@item.CompletedCount.ToString()"/>
+                        <RadzenBadge BadgeStyle="BadgeStyle.Danger" IsPill="true" Text="@item.ActiveCount.ToString()"/>
                     </Template>
                 </RadzenDataGridColumn>
             </Columns>
@@ -52,7 +53,7 @@
         
         @if (SelectedItem is {})
         {
-            <RadzenTextBox @bind-Value="@SelectedItem.Task"/>
+            <RadzenTextBox @bind-Value="@SelectedItem.Title"/>
             <RadzenButton Text="Save ToDo" Click="OnItemSaved"/>
         }
         

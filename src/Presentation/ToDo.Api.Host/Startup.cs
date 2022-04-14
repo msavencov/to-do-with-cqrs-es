@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using Autofac;
 using EventFlow;
 using EventFlow.AspNetCore.Extensions;
@@ -13,6 +10,7 @@ using EventFlow.Autofac.Extensions;
 using EventFlow.Configuration;
 using EventFlow.Core;
 using EventFlow.EventStores.EventStore;
+using EventFlow.EventStores.EventStore.Extensions;
 using EventFlow.Extensions;
 using EventFlow.Logs;
 using EventStore.ClientAPI;
@@ -27,8 +25,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using MS.RestApi.Server;
-using MS.RestApi.Server.Swagger;
 using ToDo.Api.Host.Auth;
 using ToDo.Api.Host.Doc;
 using ToDo.Api.Host.Jobs;
@@ -36,6 +32,8 @@ using ToDo.Api.Host.Utils;
 using ToDo.Core.Module;
 using ToDo.ReadStore.EF.Module;
 using ToDo.Service;
+using ToDo.Service.List;
+using ToDo.Service.Tasks;
 
 namespace ToDo.Api.Host
 {
@@ -51,15 +49,14 @@ namespace ToDo.Api.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddApiMvcOptions();
             services.AddEndpointsApiExplorer();
             
             ConfigureAuthentication(services);
             ConfigureSwagger(services);
-            
+            ConfigureGrpc(services);
             services.AddToDoApplication();
             
-            //services.AddHostedService<DBMigratorService>();
+            services.AddHostedService<DBMigratorService>();
             //services.AddHostedService<ModelPopulatorService>();
         }
 
@@ -96,31 +93,7 @@ namespace ToDo.Api.Host
                                                .SetDefaultUserCredentials(esUserCredentials)
                                                .DisableServerCertificateValidation()
                                                .UseCustomHttpMessageHandler(esHttpMessageHandler);
-            var esConnection = default(IEventStoreConnection);
-            
-            switch (esUriBuilder.Scheme)
-            {
-                case "tcp":
-                    esConnection =  EventStoreConnection.Create(esSettings, esUri);
-                    break;
-                case "esdb+discover":
-                {
-                    var esClusterSettings = ClusterSettings.Create()
-                                                           .DiscoverClusterViaDns()
-                                                           .KeepDiscovering()
-                                                           .SetMaxDiscoverAttempts(500)
-                                                           .SetClusterDns(esUri.Host);
-                    esConnection = EventStoreConnection.Create(esSettings, esClusterSettings);
-                    break;
-                }
-                default:
-                    throw new Exception("Unable to build EventStoreDB connection. Please, configure EventStoreDB connection in 'EventStore:EventStoreDb:ConnectionString' with tcp or esdb+discover scheme.");
-            }
-
-            esConnection.ConnectAsync().GetAwaiter().GetResult();
-            
-            eventFlowOptions.RegisterServices(f => f.Register(r => esConnection, Lifetime.Singleton));
-            eventFlowOptions.UseEventStore<EventStoreEventPersistence>();
+            eventFlowOptions.UseEventStoreEventStore(esUri, esSettings);
             
             eventFlowOptions.RegisterModule<ToDoDomainModule>();
             eventFlowOptions.RegisterModule<ToDoStoreModule>();
@@ -151,6 +124,11 @@ namespace ToDo.Api.Host
             });
         }
 
+        private void ConfigureGrpc(IServiceCollection services)
+        {
+            services.AddGrpc();
+        }
+        
         private void ConfigureSwagger(IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
@@ -159,16 +137,8 @@ namespace ToDo.Api.Host
                 c.CustomSchemaIds(type => type.FullName);
                 c.DocumentFilter<EventsDocumentFilter>();
 
-                var docs = new[]
-                {
-                    XDocument.Load(typeof(Contract.ServiceModule).Assembly.DocumentationFilePath()),
-                    XDocument.Load(typeof(Startup).Assembly.DocumentationFilePath()),
-                }.ReplaceInheritedComments();
-                
-                foreach (var doc in docs)
-                {
-                    c.IncludeXmlComments(() => new XPathDocument(doc.CreateReader()));
-                }
+                c.IncludeXmlComments(typeof(Contract.ContractModule).Assembly.DocumentationFilePath());
+                c.IncludeXmlComments(typeof(Startup).Assembly.DocumentationFilePath());
                 
                 var authority = _configuration.GetValue<string>("Auth:OIDC:Authority");
                 var securityScheme = new OpenApiSecurityScheme
@@ -194,7 +164,7 @@ namespace ToDo.Api.Host
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IResolver resolver)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IResolver resolver, IEventStoreConnection esConnection)
         {
             if (env.IsDevelopment() || env.IsStaging())
             {
@@ -208,7 +178,13 @@ namespace ToDo.Api.Host
             app.UseAuthentication();
             app.UseAuthorization();
             
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                
+                endpoints.MapGrpcService<ListService>().RequireAuthorization();
+                endpoints.MapGrpcService<TasksService>().RequireAuthorization();
+            });
         }
     }
 }

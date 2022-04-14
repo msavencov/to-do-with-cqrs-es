@@ -1,0 +1,54 @@
+﻿syntax = "proto3";
+option csharp_namespace = "ToDo.Api.Contract.Lists";
+package ListApi;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "Api/common.proto";
+
+service ListService {
+  rpc Add(AddRequest) returns (AddRequest.Response);
+  rpc Rename(RenameRequest) returns (google.protobuf.Empty);
+  rpc Get(GetRequest) returns (GetRequest.Response);
+  rpc Find(FindRequest) returns (FindRequest.Response);
+}
+
+message AddRequest {
+  string Name = 1;
+  
+  message Response {
+    string Id = 1;
+  }
+}
+
+message RenameRequest {
+  string Id = 2;
+  string Name = 1;
+}
+
+message FindRequest {
+  string Criteria = 1;
+  common.Paging Paging = 2;
+  
+  message Response {
+    common.Paged Page = 1;
+    repeated ListItem Result = 2;
+  }
+}
+
+message GetRequest {
+  string Id = 1;
+  
+  message Response {
+    ListItem List = 1;
+  }
+}
+
+message ListItem {
+  string Id = 1;
+  string Name = 2;
+  google.protobuf.Timestamp CreatedAt = 3;
+  string CreatedBy = 4;
+  int32 ActiveCount = 5;
+  int32 CompletedCount = 6;
+}
