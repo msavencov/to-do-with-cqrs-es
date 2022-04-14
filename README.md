@@ -3,7 +3,7 @@
 The main objective of this project is R&D in DDD of applications using CQRS+ES architecture.
 
 ## Technologies & Frameworks used
-* [EventFlow]([title](https://www.example.com)) CQRS+ES framework
+* [EventFlow]((https://github.com/eventflow/EventFlow)) CQRS+ES framework
 * [EventStoreDB](https://www.eventstore.com/) aggregates events persistence 
 * [Sql Server 2019](https://www.microsoft.com/sql-server/sql-server-downloads) read model persistence
 * [Entity Framework Core](https://docs.microsoft.com/ef/core/) ORM for read models
