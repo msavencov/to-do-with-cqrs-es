@@ -4,15 +4,16 @@ The main objective of this project is R&D in DDD of applications using CQRS+ES a
 
 ## Technologies & Frameworks used
 * [EventFlow](https://github.com/eventflow/EventFlow) CQRS+ES framework
+* [MediatR](https://github.com/jbogard/MediatR) translate API operations into domain commands
+* [RabbitMQ](https://www.rabbitmq.com/) event broker for integrations
+* [Entity Framework Core](https://docs.microsoft.com/ef/core/) ORM for read models
+* [Radzen Blazor](https://blazor.radzen.com/) component library for UI
+* [ASP.NET Core](https://docs.microsoft.com/aspnet/core) web UI and API service
+* [ASP.NET Core Blazor](https://docs.microsoft.com/aspnet/core/blazor/) UI framework
+
+## Data stores
 * [EventStoreDB](https://www.eventstore.com/) aggregates events persistence 
 * [Sql Server 2019](https://www.microsoft.com/sql-server/sql-server-downloads) read model persistence
-* [Entity Framework Core](https://docs.microsoft.com/ef/core/) ORM for read models
-* [RabbitMQ](https://www.rabbitmq.com/) event broker for integrations
-* [MediatR](https://github.com/jbogard/MediatR) translate API operations into domain commands
-* [ASP.NET Core](https://docs.microsoft.com/aspnet/core) web UI and API service
-* [MS.RestApi](https://github.com/msavencov/MS.RestApi) client/server communication
-* [ASP.NET Core Blazor](https://docs.microsoft.com/aspnet/core/blazor/) UI framework
-* [Radzen Blazor](https://blazor.radzen.com/) component library for UI 
 
 ## To run the app in development env.
 
