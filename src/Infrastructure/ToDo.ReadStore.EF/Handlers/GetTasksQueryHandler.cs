@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.Queries;
+using ToDo.ReadStore.Abstractions.Extensions;
 using ToDo.ReadStore.Abstractions.ReadStores;
 using ToDo.ReadStore.Items;
 using ToDo.ReadStore.Items.Queries;
@@ -20,9 +21,28 @@ internal class GetTasksQueryHandler : IQueryHandler<GetTasksQuery, IEnumerable<T
 
     public async Task<IEnumerable<ToDoItemReadModel>> ExecuteQueryAsync(GetTasksQuery query, CancellationToken ct)
     {
-        return (
-                await _modelStore.FindAsync(t => t.ListId == query.ListId.Value, ct)
-            )
-            .OrderByDescending(t => t.CreatedAt);
+        var filter = PredicateBuilder.True<ToDoItemReadModel>();
+        
+        if (query.Id is {Value.Length: > 0})
+        {
+            filter = filter.And(t => t.Id == query.Id.Value);
+        }
+
+        if (query.ListId is {Value.Length: > 0})
+        {
+            filter = filter.And(t => t.ListId == query.ListId.Value);
+        }
+
+        if (query.IncludeDeleted is false)
+        {
+            filter = filter.And(t => t.IsDeleted == false);
+        }
+
+        if (query.TitleContains is {Length: > 0})
+        {
+            filter = filter.And(t => t.Description.Contains(query.TitleContains));
+        }
+
+        return await _modelStore.FindAsync(filter, ct);
     }
 }

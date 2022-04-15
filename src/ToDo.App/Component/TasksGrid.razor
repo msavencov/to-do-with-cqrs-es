@@ -21,7 +21,11 @@
                 @if (item.IsCompleted == false)
                 {
                     <RadzenButton Text="Done" Click="() => TaskItemDone(item)" ButtonStyle="ButtonStyle.Primary"/>
-                    <RadzenButton Text="Delete" Click="() => TaskItemDelete(item)" ButtonStyle="ButtonStyle.Danger"/>
+                    
+                    @if (item.IsDeleted == false)
+                    {
+                        <RadzenButton Text="Delete" Click="() => TaskItemDelete(item)" ButtonStyle="ButtonStyle.Danger"/>
+                    }
                 }
             </Template>
         </RadzenDataGridColumn>

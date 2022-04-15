@@ -11,6 +11,7 @@ namespace ToDo.ReadStore.Lists
 {
     public class ToDoListReadModel : IReadModel
         , IAmReadModelFor<ToDoList, ToDoListId, ToDoListCreated>
+        , IAmReadModelFor<ToDoList, ToDoListId, ListNameChanged>
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemCreated>
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemCompleted>
         , IAmReadModelFor<ToDoItem, ToDoItemId, ToDoItemDeleted>
@@ -42,6 +43,11 @@ namespace ToDo.ReadStore.Lists
         public void Apply(IReadModelContext context, IDomainEvent<ToDoItem, ToDoItemId, ToDoItemDeleted> domainEvent)
         {
             TaskCount -= 1;
-        } 
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<ToDoList, ToDoListId, ListNameChanged> domainEvent)
+        {
+            Name = domainEvent.AggregateEvent.Name;
+        }
     }
 }

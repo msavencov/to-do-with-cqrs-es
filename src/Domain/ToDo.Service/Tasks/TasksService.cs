@@ -68,7 +68,8 @@ namespace ToDo.Api.Services.Tasks
         {
             var query = new GetTasksQuery
             {
-                ListId = ToDoListId.With(request.ListId)
+                ListId = ToDoListId.With(request.ListId),
+                IncludeDeleted = request.ShowDeleted
             };
             var result = await _queryProcessor.ProcessAsync(query, context.CancellationToken);
             var tasks = result.Select(t => new TaskItem
@@ -78,7 +79,8 @@ namespace ToDo.Api.Services.Tasks
                 CreatedAt = t.CreatedAt.ToTimestamp(), 
                 CreatedBy = t.CreatedBy,
                 ListId = t.ListId, 
-                IsCompleted = t.IsCompleted
+                IsCompleted = t.IsCompleted, 
+                IsDeleted = t.IsDeleted, 
             });
 
             return new FindRequest.Types.Response

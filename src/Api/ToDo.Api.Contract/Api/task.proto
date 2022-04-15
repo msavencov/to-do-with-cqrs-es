@@ -23,7 +23,7 @@ message RenameRequest {
 message FindRequest {
   optional string ListId = 2;
   optional string Query = 1;
-  
+  optional bool ShowDeleted = 3;
   common.Paging Paging = 10;
   
   message Response {
@@ -67,4 +67,5 @@ message TaskItem {
   google.protobuf.Timestamp CreatedAt = 4;
   string CreatedBy = 5;
   bool IsCompleted = 6;
+  bool IsDeleted = 7;
 }

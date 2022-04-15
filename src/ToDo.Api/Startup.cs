@@ -30,6 +30,7 @@ using ToDo.Api.Services;
 using ToDo.Api.Services.List;
 using ToDo.Api.Services.Tasks;
 using ToDo.Api.Utils;
+using ToDo.Api.Validation;
 using ToDo.Core.Module;
 using ToDo.ReadStore.EF.Module;
 
@@ -55,13 +56,17 @@ namespace ToDo.Api
             services.AddToDoApplication();
             
             services.AddHostedService<DBMigratorService>();
-            //services.AddHostedService<ModelPopulatorService>();
+            services.AddHostedService<ModelPopulatorService>();
         }
 
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
             var eventFlowOptions = EventFlowOptions.New.UseAutofacContainerBuilder(containerBuilder);
 
+            eventFlowOptions.RegisterServices(registration =>
+            {
+                registration.Decorate<ICommandBus>((c, inner) => new StatsCommandBus(inner));
+            });
             eventFlowOptions.Configure(configuration =>
             {
                 configuration.PopulateReadModelEventPageSize = 1000;
