@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "provider": "unpkg",
+      "library": "djibe-material@4.6.0-rc.2",
+      "destination": "wwwroot/lib/material",
+      "files": [
+        "css/*",
+        "js/*"
+      ]
+    }
+  ]
+}

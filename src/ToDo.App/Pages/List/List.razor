@@ -1,0 +1,20 @@
+﻿@page "/list"
+
+<Card>
+    <CardHeader>
+        To Do lists
+    </CardHeader>
+    <CardBody>
+        
+        <DataGrid TItem="ListViewModel.ListItemModel" Data="@Model.Lists" ReadData="@OnReadData"
+                  SelectionMode="DataGridSelectionMode.Single" RowSelectable="_ => true" SelectedRowChanged="OnSelectedRowChanged"
+                  Responsive>
+            <DataGridColumns>
+                <DataGridColumn TItem="ListViewModel.ListItemModel" Field="@nameof(ListViewModel.ListItemModel.Name)" Caption="Name"/>
+                <DataGridColumn TItem="ListViewModel.ListItemModel" Field="@nameof(ListViewModel.ListItemModel.CreatedAt)" Caption="Created At" DisplayFormat="{0:yyyy, MMM dd HH:mm}"/>
+                <DataGridColumn TItem="ListViewModel.ListItemModel" Field="@nameof(ListViewModel.ListItemModel.CreatedBy)" Caption="Created By" />
+            </DataGridColumns>
+        </DataGrid>
+        
+    </CardBody>
+</Card>

@@ -1,25 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <RadzenDialog/>
-    <RadzenNotification/>
-    <RadzenTooltip/>
-    
-    <div class="sidebar">
+<Layout>
+    <LayoutHeader>
         <NavMenu/>
-    </div>
-
-    <div class="main">
-        <div class="content px-4">
-            <AuthorizeView>
-                <Authorized>
-                    @Body
-                </Authorized>
-                <NotAuthorized>
-                    Access Denied.
-                </NotAuthorized>
-            </AuthorizeView>
-            
-        </div>
-    </div>
-</div>
+    </LayoutHeader>
+    
+    <LayoutContent>
+        <AuthorizeView>
+            <Authorized>
+                @Body
+            </Authorized>
+            <NotAuthorized>
+                Access Denied.
+            </NotAuthorized>
+        </AuthorizeView>
+    </LayoutContent>
+    
+    <LayoutFooter>
+        <Text TextAlignment="TextAlignment.Center">
+            Copyright © @(DateTime.Now.Year) ToDo App. All Rights Reserved
+        </Text>
+    </LayoutFooter>
+</Layout>

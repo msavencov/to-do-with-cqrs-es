@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
+using Blazorise;
+using Blazorise.Icons.Material;
+using Blazorise.Material;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -12,10 +14,10 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Radzen;
 using ToDo.Api.Client;
 using ToDo.Api.Client.Auth;
 using ToDo.App.Auth;
+using ToDo.App.Pages.List;
 
 namespace ToDo.App
 {
@@ -32,7 +34,13 @@ namespace ToDo.App
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazoredLocalStorage();
+            
+            services.AddBlazorise(options =>
+            {
+                options.Immediate = true;
+            });
+            services.AddMaterialProviders();
+            services.AddMaterialIcons();
             
             services.AddGrpcClient(options =>
             {
@@ -40,12 +48,9 @@ namespace ToDo.App
             });
             services.AddScoped<TokenProvider>();
             services.AddScoped<IAccessTokenAccessor, AccessTokenAccessor>();
-            
-            services.AddScoped<DialogService>();
-            services.AddScoped<NotificationService>();
-            services.AddScoped<TooltipService>();
-            services.AddScoped<ContextMenuService>();
 
+            services.AddScoped<ListViewModel>();
+            
             AddAuthenticationServices(services);
         }
 

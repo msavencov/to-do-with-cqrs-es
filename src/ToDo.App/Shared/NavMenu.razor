@@ -1,18 +1,36 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">ToDo.App</a>
-</div>
+﻿<Bar Breakpoint="Breakpoint.Desktop" Background="Background.Light" ThemeContrast="ThemeContrast.Light">
+    <BarBrand>
+        ToDo App
+    </BarBrand>
 
-<RadzenPanelMenu>
-    <AuthorizeView>
-        
-        <Authorized>
-            <RadzenPanelMenuItem Text="Lists" Path="list" Icon="list"/>
-            <RadzenPanelMenuItem Text="Logout" Path="account/logout" Icon="logout"/>
-        </Authorized>
-
-        <NotAuthorized>
-            <RadzenPanelMenuItem Text="Login" Path="account/login" Icon="account_box"/>
-        </NotAuthorized>
-        
-    </AuthorizeView>
-</RadzenPanelMenu>
+    <BarMenu>
+        <BarStart>
+            <AuthorizeView>
+                <Authorized>
+                    <BarItem>
+                        <BarLink To="/">Home</BarLink>
+                    </BarItem>
+                    <BarItem>
+                        <BarLink To="list">List</BarLink>
+                    </BarItem>
+                </Authorized>
+            </AuthorizeView>
+        </BarStart>
+        <BarEnd>
+            <BarItem>
+                <AuthorizeView>
+                    <Authorized>
+                        <BarItem>
+                            <BarLink To="account/logout">Log out</BarLink>
+                        </BarItem>
+                    </Authorized>
+                    <NotAuthorized>
+                        <BarItem>
+                            <BarLink To="account/login">Log in</BarLink>
+                        </BarItem>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </BarItem>
+        </BarEnd>
+    </BarMenu>
+</Bar>
