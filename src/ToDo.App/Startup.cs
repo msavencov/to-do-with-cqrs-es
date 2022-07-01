@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +31,6 @@ namespace ToDo.App
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddBlazoredLocalStorage();
             
             services.AddGrpcClient(options =>
             {

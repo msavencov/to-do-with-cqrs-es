@@ -1,7 +1,7 @@
 ﻿syntax = "proto3";
 package TaskApi;
-
 option csharp_namespace = "ToDo.Api.Contract.Tasks";
+
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "Api/common.proto";
@@ -22,8 +22,9 @@ message RenameRequest {
 
 message FindRequest {
   optional string ListId = 2;
-  optional string Query = 1;
+  optional string Criteria = 1;
   optional bool ShowDeleted = 3;
+  
   common.Paging Paging = 10;
   
   message Response {

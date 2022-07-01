@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
-option csharp_namespace = "ToDo.Api.Contract.Lists";
 package ListApi;
+option csharp_namespace = "ToDo.Api.Contract.Lists";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";

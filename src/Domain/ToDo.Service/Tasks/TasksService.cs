@@ -69,6 +69,7 @@ namespace ToDo.Api.Services.Tasks
             var query = new GetTasksQuery
             {
                 ListId = ToDoListId.With(request.ListId),
+                TitleContains = request.Criteria,
                 IncludeDeleted = request.ShowDeleted
             };
             var result = await _queryProcessor.ProcessAsync(query, context.CancellationToken);
