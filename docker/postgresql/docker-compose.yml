@@ -1,0 +1,17 @@
+﻿version: '3.8'
+services:
+  pgsql:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=todo
+      - POSTGRES_USER=todo
+      - POSTGRES_PASSWORD=todo-secret
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./logs:/logs
+volumes:
+  db:
+    driver: local
