@@ -18,8 +18,15 @@ namespace ToDo.Api.Jobs
         
         public async Task StartAsync(CancellationToken ct)
         {
-            await _contextProvider.CreateContext().Database.EnsureCreatedAsync(ct);
-            await _contextProvider.CreateContext().Database.MigrateAsync(ct);
+            await using var context = _contextProvider.CreateContext();
+            
+            if (context.Database.IsInMemory())
+            {
+                return;
+            }
+            
+            await context.Database.EnsureCreatedAsync(ct);
+            await context.Database.MigrateAsync(ct);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

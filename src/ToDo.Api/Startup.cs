@@ -34,7 +34,9 @@ using ToDo.Api.Services.Tasks;
 using ToDo.Api.Utils;
 using ToDo.Api.Validation;
 using ToDo.Core.Module;
+using ToDo.ReadStore.EF.InMemory;
 using ToDo.ReadStore.EF.Module;
+using ToDo.ReadStore.EF.PostgreSQL.Module;
 using ToDo.ReadStore.EF.SQLServer.Module;
 
 namespace ToDo.Api
@@ -126,7 +128,23 @@ namespace ToDo.Api
 
             eventFlowOptions.RegisterModule<ToDoDomainModule>();
             eventFlowOptions.RegisterModule<ToDoStoreModule>();
-            eventFlowOptions.RegisterModule<SQLServerStoreModule>();
+
+            var readStoreSettings = _configuration.GetSection("ToDoContext");
+            var readStoreProvider = readStoreSettings.GetValue<string>("UseProvider");
+
+            switch (readStoreProvider)
+            {
+                case "PostgreSQL":
+                    eventFlowOptions.RegisterModule<PostgreSQLStoreModule>();
+                    break;
+                case "SQLServer":
+                    eventFlowOptions.RegisterModule<SQLServerStoreModule>();
+                    break;
+                default:
+                    eventFlowOptions.RegisterModule<InMemoryStoreModule>();
+                    break;
+            }
+            
         }
         
         private void ConfigureAuthentication(IServiceCollection services)
