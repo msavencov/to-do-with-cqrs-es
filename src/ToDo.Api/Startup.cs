@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using Autofac;
@@ -82,26 +84,49 @@ namespace ToDo.Api
             });
             
             var esConfig = _configuration.GetSection("EventStore:EventStoreDb");
-            var esUri = esConfig.GetValue<Uri>("ConnectionString");
-            var esUriBuilder = new UriBuilder(esUri);
-            var esHttpMessageHandler = new HttpClientHandler
+            var esConnectionString = esConfig.GetValue<string>("ConnectionString");
+
+            if (esConnectionString.StartsWith("ConnectTo=", StringComparison.OrdinalIgnoreCase))
             {
-                ServerCertificateCustomValidationCallback = delegate { return true; }
-            };
-            var esUserCredentials = new UserCredentials(esUriBuilder.UserName, esUriBuilder.Password);
-            var esSettings = ConnectionSettings.Create()
-                                               .KeepRetrying()
-                                               .KeepReconnecting()
-                                               .UseConsoleLogger()
-                                               .SetDefaultUserCredentials(esUserCredentials)
-                                               .DisableServerCertificateValidation()
-                                               .UseCustomHttpMessageHandler(esHttpMessageHandler);
-            eventFlowOptions.UseEventStoreEventStore(esUri, esSettings);
-            
+                var esSettings = ConnectionString.GetConnectionSettings(esConnectionString);
+                var esConnectionBuilder = new DbConnectionStringBuilder(false)
+                {
+                    ConnectionString = esConnectionString,
+                };
+                
+                if (esConnectionBuilder.TryGetValue("ConnectTo", out var esUriString) == false)
+                {
+                    throw new ArgumentException("The ConnectionString doesn't contain the 'ConnectTo' argument.");
+                }
+                var esUri = new Uri((string)esUriString);
+
+                eventFlowOptions.UseEventStoreEventStore(esUri, esSettings);
+            }
+
+            if (esConnectionString.StartsWith("discover", StringComparison.OrdinalIgnoreCase))
+            {
+                var esUri = new Uri(esConnectionString); 
+                var esUriBuilder = new UriBuilder(esUri);
+                var esHttpMessageHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = delegate { return true; }
+                };
+                var esUserCredentials = new UserCredentials(esUriBuilder.UserName, esUriBuilder.Password);
+                var esSettings = ConnectionSettings.Create()
+                    .KeepRetrying()
+                    .KeepReconnecting()
+                    .UseConsoleLogger()
+                    .SetDefaultUserCredentials(esUserCredentials)
+                    .DisableServerCertificateValidation()
+                    .UseCustomHttpMessageHandler(esHttpMessageHandler);
+                
+                eventFlowOptions.UseEventStoreEventStore(esUri, esSettings);
+            }
+
             eventFlowOptions.RegisterModule<ToDoDomainModule>();
             eventFlowOptions.RegisterModule<ToDoStoreModule>();
         }
-
+        
         private void ConfigureAuthentication(IServiceCollection services)
         {
             services.AddAuthentication(options =>
