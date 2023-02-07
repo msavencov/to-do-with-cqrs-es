@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Radzen;
 using ToDo.Api.Client;
 using ToDo.Api.Client.Auth;
@@ -58,6 +59,8 @@ namespace ToDo.App
                     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                     {
                         var oidc = _configuration.GetSection("Auth:OIDC");
+                        var audience = oidc["Audience"];
+                        
                         var users = _configuration.GetSection("Auth:Users").AsEnumerable().Select(t => t.Value).ToArray();
                     
                         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -67,7 +70,7 @@ namespace ToDo.App
                         options.ClientId = oidc["ClientId"];
                         options.ClientSecret = oidc["ClientSecret"];
 
-                        options.ResponseType = "code";
+                        options.ResponseType = "code token";
                     
                         options.Scope.Add("openid");
                         options.Scope.Add("profile");
@@ -77,20 +80,25 @@ namespace ToDo.App
 
                         options.SaveTokens = true;
                         options.GetClaimsFromUserInfoEndpoint = true;
-                    
-                        options.Events ??= new OpenIdConnectEvents();
+
+                        options.Events.OnRedirectToIdentityProvider = context =>
+                        {
+                            if (audience is { Length: > 0 })
+                            {
+                                context.ProtocolMessage.SetParameter("audience", audience);
+                            }
+                            
+                            return Task.CompletedTask;
+                        };
                         options.Events.OnTokenValidated = context =>
                         {
-                            if (context.Principal is { })
+                            if (context.Principal is { Identity: { IsAuthenticated: true } identity })
                             {
-                                var nameIdentifier = context.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-                                var name = nameIdentifier?.Replace(@"starnet\", "", StringComparison.OrdinalIgnoreCase);
-                            
                                 var claims = new List<Claim>
                                 {
                                     new(ClaimTypes.Role, "user")
                                 };
-                                if (users.Contains(name))
+                                if (users.Contains(identity.Name))
                                 {
                                     claims.Add(new (ClaimTypes.Role, "admin"));
                                 }
@@ -101,6 +109,7 @@ namespace ToDo.App
                             return Task.CompletedTask;
                         };
                     });
+            
             services.AddAuthorization();
         }
 

@@ -22,7 +22,7 @@ namespace ToDo.Api.Auth
         {
             if (_httpContextAccessor.HttpContext is {User: { } user })
             {
-                yield return new KeyValuePair<string, string>("username", user.FindFirstValue(_options.UserNameClaimType));
+                yield return new KeyValuePair<string, string>("username", user.Identity?.Name ?? "anonymous");
             }
         }
     }

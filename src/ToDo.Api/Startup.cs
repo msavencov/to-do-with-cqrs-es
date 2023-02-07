@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Autofac;
 using EventFlow;
 using EventFlow.AspNetCore.Extensions;
@@ -157,11 +158,6 @@ namespace ToDo.Api
                     .AddJwtBearer(options =>
                     {
                         _configuration.GetSection("Auth:OIDC").Bind(options);
-
-                        options.TokenValidationParameters.ValidateAudience = false;
-                        
-                        options.TokenValidationParameters.NameClaimType = ClaimTypes.NameIdentifier;
-                        options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
                     });
             services.Configure<MvcOptions>(options =>
             {

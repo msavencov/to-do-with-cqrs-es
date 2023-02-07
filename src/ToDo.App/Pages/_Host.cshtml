@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.IdentityModel.Protocols.OpenIdConnect
 @using ToDo.App.Auth
 @namespace ToDo.App.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -24,8 +26,9 @@
 @{
     var tokens = new InitialApplicationState
     {
-        AccessToken = await HttpContext.GetTokenAsync("access_token"),
-        RefreshToken = await HttpContext.GetTokenAsync("refresh_token")
+        IdToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken),
+        AccessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken),
+        RefreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken)
     };
 }
 

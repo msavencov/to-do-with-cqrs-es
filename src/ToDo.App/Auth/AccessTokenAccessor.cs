@@ -11,6 +11,6 @@ namespace ToDo.App.Auth
             _provider = provider;
         }
         
-        public string AccessToken { get => _provider.AccessToken; set => _ = value; }
+        public string AccessToken { get => _provider.IdToken; set => _ = value; }
     }
 }
