@@ -7,7 +7,6 @@ namespace ToDo.ReadStore.Abstractions
     {
         public void Register(IEventFlowOptions options)
         {
-            //options.PublishToRabbitMq();
         }
     }
 }

@@ -5,7 +5,6 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="EventFlow" Version="0.83.4713" />
-        <PackageReference Include="EventFlow.RabbitMQ" Version="0.83.4713" />
         <PackageReference Include="EventFlow.EntityFramework" Version="0.83.4713" />
     </ItemGroup>
 </Project>
