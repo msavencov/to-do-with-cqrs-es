@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace ToDo.ReadStore.EF
 {
-    public class ToDoDesignTimeContextFactory : IDesignTimeDbContextFactory<ToDoContext>
+    // dotnet ef migrations add "name" --project Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj --startup-project Presentation\ToDo.Api.Host\ToDo.Api.Host.csproj
+    // dotnet ef migrations remove --project Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj --startup-project Presentation\ToDo.Api.Host\ToDo.Api.Host.csproj
+    public sealed class SQLServerDesignTimeContextFactory : IDesignTimeDbContextFactory<ToDoContext>
     {
         public ToDoContext CreateDbContext(string[] args)
         {

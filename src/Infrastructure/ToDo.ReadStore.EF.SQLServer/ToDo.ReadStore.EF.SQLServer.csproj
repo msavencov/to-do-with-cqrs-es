@@ -5,13 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Domain\ToDo.Core\ToDo.Core.csproj" />
-      <ProjectReference Include="..\..\Domain\ToDo.ReadStore\ToDo.ReadStore.csproj" />
-      <ProjectReference Include="..\ToDo.ReadStore.Abstractions\ToDo.ReadStore.Abstractions.csproj" />
+      <ProjectReference Include="..\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="EventFlow.EntityFramework" Version="0.83.4713" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+        
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
     </ItemGroup>
 
 </Project>

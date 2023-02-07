@@ -16,7 +16,6 @@ namespace ToDo.ReadStore.EF.Module
         {
             options.ConfigureEntityFramework(EntityFrameworkConfiguration.New)
                    .AddDefaults(typeof(ToDoStoreModule).Assembly)
-                   .AddDbContextProvider<ToDoContext, ToDoContextProvider>()
                    .UseEntityFrameworkReadModel<ToDoListReadModel, ToDoContext, ToDoListReadModelLocator>()
                    .UseEntityFrameworkReadModel<ToDoItemReadModel, ToDoContext>()
                    .UseEntityFrameworkSnapshotStore<ToDoContext>()

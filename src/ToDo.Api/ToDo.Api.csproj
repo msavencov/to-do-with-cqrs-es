@@ -25,6 +25,7 @@
         <ProjectReference Include="..\Domain\ToDo.ReadStore\ToDo.ReadStore.csproj" />
         <ProjectReference Include="..\Domain\ToDo.Service\ToDo.Service.csproj" />
         <ProjectReference Include="..\Infrastructure\EventFlow.EventStores.EventStore\EventFlow.EventStores.EventStore.csproj" />
+        <ProjectReference Include="..\Infrastructure\ToDo.ReadStore.EF.SQLServer\ToDo.ReadStore.EF.SQLServer.csproj" />
         <ProjectReference Include="..\Infrastructure\ToDo.ReadStore.EF\ToDo.ReadStore.EF.csproj" />
     </ItemGroup>
     

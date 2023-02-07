@@ -35,6 +35,7 @@ using ToDo.Api.Utils;
 using ToDo.Api.Validation;
 using ToDo.Core.Module;
 using ToDo.ReadStore.EF.Module;
+using ToDo.ReadStore.EF.SQLServer.Module;
 
 namespace ToDo.Api
 {
@@ -125,6 +126,7 @@ namespace ToDo.Api
 
             eventFlowOptions.RegisterModule<ToDoDomainModule>();
             eventFlowOptions.RegisterModule<ToDoStoreModule>();
+            eventFlowOptions.RegisterModule<SQLServerStoreModule>();
         }
         
         private void ConfigureAuthentication(IServiceCollection services)

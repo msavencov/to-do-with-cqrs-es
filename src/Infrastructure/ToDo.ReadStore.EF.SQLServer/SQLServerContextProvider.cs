@@ -3,15 +3,15 @@ using EventFlow.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace ToDo.ReadStore.EF
+namespace ToDo.ReadStore.EF.SQLServer
 {
-    public class ToDoContextProvider : IDbContextProvider<ToDoContext>
+    internal class SQLServerContextProvider : IDbContextProvider<ToDoContext>
     {
         private readonly DbContextOptionsBuilder<ToDoContext> _optionsBuilder;
 
-        public ToDoContextProvider(IConfiguration configuration)
+        public SQLServerContextProvider(IConfiguration configuration)
         {
-            var config = configuration.GetSection("ToDoContext").Get<ToDoContextOptions>();
+            var config = configuration.GetSection("ToDoContext:SQLServer").Get<ToDoContextOptions>();
             var assemblyName = typeof(ToDoContext).Assembly.GetName().Name;
             
             _optionsBuilder = new DbContextOptionsBuilder<ToDoContext>();
