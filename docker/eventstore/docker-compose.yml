@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.8"
 
 services:
   eventstore:
@@ -18,3 +18,11 @@ services:
     volumes:
       - ./data:/var/lib/eventstore
       - ./logs:/var/log/eventstore
+    networks:
+      - eventstore
+
+networks:
+  eventstore:
+    driver: overlay
+    name: eventstore
+    attachable: true

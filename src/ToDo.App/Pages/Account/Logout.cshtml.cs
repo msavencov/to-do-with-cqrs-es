@@ -18,12 +18,11 @@ namespace ToDo.App.Pages.Account
         
         public IActionResult OnGet()
         {
-            var redirectUri = _configuration["PostLogoutRedirectUri"] ?? "/";
             var options = new AuthenticationProperties
             {
-                RedirectUri = redirectUri
+                RedirectUri = "/"
             }; 
-            return SignOut(options, OpenIdConnectDefaults.AuthenticationScheme, CookieAuthenticationDefaults.AuthenticationScheme);
+            return SignOut(properties: options);
         }
     }
 }

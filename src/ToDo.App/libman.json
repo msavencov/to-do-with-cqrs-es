@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "https://json.schemastore.org/libman",
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@5.2.3",
+      "destination": "wwwroot/lib/bootstrap",
+      "files": [
+        "css/bootstrap.min.css"
+      ]
+    }
+  ]
+}

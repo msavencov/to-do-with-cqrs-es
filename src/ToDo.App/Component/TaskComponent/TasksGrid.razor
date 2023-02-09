@@ -1,7 +1,19 @@
 ﻿@using ToDo.Api.Contract.Tasks
 
-<RadzenDataGrid TItem="TaskItem" Count="@(Tasks?.Items?.Count ?? 0)" Data="@(Tasks?.Items)"
-                AllowPaging="true" PageSize="18">
+@if (ListId == null)
+{
+    return;
+}
+
+<ApiCallWrapper TService="TasksService.TasksServiceClient" @ref="TaskApiWrapper" />
+
+<RadzenContent>
+    <RadzenButton Click="@AddTaskClick" ButtonStyle="ButtonStyle.Success" Icon="add">Add New Task</RadzenButton>
+</RadzenContent>
+
+<RadzenDataGrid TItem="TaskItem" @ref="@Grid"
+                Count="@(Tasks?.Page.TotalRows ?? 0)" Data="@(Tasks?.Items)" LoadData="OnLoadData"
+                AllowPaging="true" PageSize="10" class="mt-2">
     <Columns>
         <RadzenDataGridColumn TItem="TaskItem" Property="CreatedAt" Title="Created At" Width="150px">
             <Template Context="item">

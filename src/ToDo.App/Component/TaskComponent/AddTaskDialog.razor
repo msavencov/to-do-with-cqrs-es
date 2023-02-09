@@ -1,0 +1,10 @@
+﻿<RadzenCard>
+    <div>
+        <RadzenLabel Text="Task Name" class="form-label"></RadzenLabel>
+        <RadzenTextBox @bind-Value="@Model.Name" Name="Name" class="form-control"/>
+    </div>
+    <div class="clearfix mt-2">
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Text" Click="() => DialogService.Close()">Cancel</RadzenButton>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" Variant="Variant.Text" Click="@AddTask" class="float-end">Save</RadzenButton>
+    </div>
+</RadzenCard>

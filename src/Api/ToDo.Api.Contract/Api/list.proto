@@ -28,6 +28,8 @@ message RenameRequest {
 
 message FindRequest {
   string Criteria = 1;
+  string OrderBy = 3;
+  
   common.Paging Paging = 2;
   
   message Response {

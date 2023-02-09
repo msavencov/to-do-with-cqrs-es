@@ -1,16 +1,21 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+<RadzenLayout>
     <RadzenDialog/>
     <RadzenNotification/>
     <RadzenTooltip/>
     
-    <div class="sidebar">
+    <RadzenHeader>
+        <div class="d-flex align-items-center">
+            <RadzenSidebarToggle Click="@(() => SidebarExpanded = !SidebarExpanded)"/>
+            <RadzenLink Path="/" Text="ToDo App"/>
+        </div>
+    </RadzenHeader>
+    <RadzenSidebar @bind-Expanded="@SidebarExpanded">
         <NavMenu/>
-    </div>
-
-    <div class="main">
-        <div class="content px-4">
+    </RadzenSidebar>
+    <RadzenBody>
+        <div class="p-2">
             <AuthorizeView>
                 <Authorized>
                     @Body
@@ -19,7 +24,11 @@
                     Access Denied.
                 </NotAuthorized>
             </AuthorizeView>
-            
         </div>
-    </div>
-</div>
+    </RadzenBody>
+</RadzenLayout>
+
+@code
+{
+    private bool SidebarExpanded;
+}

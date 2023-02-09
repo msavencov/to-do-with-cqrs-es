@@ -1,0 +1,31 @@
+﻿@using ToDo.Api.Contract.Lists
+
+
+<RadzenRow>
+    <RadzenColumn Size="6">
+        
+        <RadzenButton Click="@EditDialogOpen" ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline">Add List</RadzenButton>
+    </RadzenColumn>
+
+    <RadzenColumn Size="6" class="rz-text-align-right">
+        <RadzenButton Click="@Reset" ButtonStyle="ButtonStyle.Light">Reset Filters</RadzenButton>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenDataGrid TItem="GridRow" @ref="grid" class="mt-2"
+                Data="@listResult" Count="@count" LoadData="@LoadData" IsLoading="@isLoading"
+                AllowPaging="true" PageSize="10"
+                SelectionMode="DataGridSelectionMode.Single" RowSelect="OnListItemSelected">
+    <Columns>
+        <RadzenDataGridColumn TItem="GridRow" Property="Id" Filterable="false" Title="ID" TextAlign="TextAlign.Left"/>
+        <RadzenDataGridColumn TItem="GridRow" Property="Name" Filterable="true" Title="Name" TextAlign="TextAlign.Left"/>
+        <RadzenDataGridColumn TItem="GridRow" Property="CreatedAt" Title="Created At" FormatString="{0:yyyy, MMM dd (HH:mm)}"/>
+        <RadzenDataGridColumn TItem="GridRow" Property="CreatedBy" Title="Created By"/>
+        <RadzenDataGridColumn TItem="GridRow" Title="#">
+            <Template Context="item">
+                <RadzenBadge BadgeStyle="BadgeStyle.Primary" IsPill="true" Text="@item.CompletedCount.ToString()"/>
+                <RadzenBadge BadgeStyle="BadgeStyle.Danger" IsPill="true" Text="@item.ActiveCount.ToString()"/>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
