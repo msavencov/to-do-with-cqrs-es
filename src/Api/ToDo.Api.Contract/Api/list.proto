@@ -15,7 +15,7 @@ service ListService {
 
 message AddRequest {
   string Name = 1;
-  
+
   message Response {
     string Id = 1;
   }
@@ -27,10 +27,19 @@ message RenameRequest {
 }
 
 message FindRequest {
-  string Criteria = 1;
-  string OrderBy = 3;
+  optional FindRequestFilter Filter = 1;
+  optional FindRequestSorting Sorting = 2;
+  optional common.Paging Paging = 3;
   
-  common.Paging Paging = 2;
+  message FindRequestSorting {
+    optional common.SortSpec Name = 1;
+    optional common.SortSpec CreatedAt = 2;
+  }
+  message FindRequestFilter
+  {
+    optional common.FilterSpec Name = 1;
+    optional common.FilterSpec CreatedAt = 2;
+  }
   
   message Response {
     common.Paged Page = 1;
@@ -40,7 +49,7 @@ message FindRequest {
 
 message GetRequest {
   string Id = 1;
-  
+
   message Response {
     ListItem List = 1;
   }

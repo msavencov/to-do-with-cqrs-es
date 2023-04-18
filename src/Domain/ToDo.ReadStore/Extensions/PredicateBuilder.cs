@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace ToDo.ReadStore.Abstractions.Extensions;
+namespace ToDo.ReadStore.Extensions;
 
 public static class PredicateBuilder
 {

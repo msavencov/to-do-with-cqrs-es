@@ -2,6 +2,7 @@
 package common;
 option csharp_namespace = "ToDo.Api.Contract.Shared";
 
+
 message Paging {
   int32 Page = 1;
   int32 Size = 2;
@@ -9,4 +10,39 @@ message Paging {
 
 message Paged {
   int32 TotalRows = 1;
+}
+
+message SortSpec {
+  SortSpecDirection Direction = 2;
+}
+
+enum SortSpecDirection {
+  Asc = 0;
+  Desc = 1;
+}
+
+enum FilterSpecLogicalOperator {
+  And = 0;
+  Or = 1;
+}
+
+enum FilterSpecOperator {
+  FilterSpecOperatorNone = 0;
+  Equals = 1;
+  GreaterThan = 2;
+  GreaterOrEqualThan = 3;
+  LessThan = 4;
+  LessThanOrEqual = 5;
+  Contains = 6;
+  IsNull = 7;
+  IsEmpty = 8;
+}
+
+message FilterSpec {
+  FilterSpecOperator Operator = 1;
+  string Value = 2;
+  bool Negate = 3;
+  FilterSpecLogicalOperator LogicalOperator = 4;
+
+  optional FilterSpec Other = 10;
 }

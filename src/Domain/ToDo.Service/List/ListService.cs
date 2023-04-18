@@ -8,7 +8,10 @@ using ToDo.Api.Contract.Lists;
 using ToDo.Api.Contract.Shared;
 using ToDo.Core.List;
 using ToDo.Core.List.Commands;
+using ToDo.ReadStore.Lists;
 using ToDo.ReadStore.Lists.Queries;
+using ToDo.ReadStore.Shared;
+using ToDo.Service.Helpers;
 
 namespace ToDo.Api.Services.List
 {
@@ -36,8 +39,45 @@ namespace ToDo.Api.Services.List
 
         public override async Task<FindRequest.Types.Response> Find(FindRequest request, ServerCallContext context)
         {
-            var query = await _queryProcessor.ProcessAsync(new GetAllListsQuery(), default);
-            var items = query.Select(t => new ListItem
+            var query = new FilterListsQuery();
+
+            if (request.Paging is { Page: > 0, Size: > 0 } paging)
+            {
+                query.Paging = new PagingSettings
+                {
+                    Page = (ushort)paging.Page,
+                    Rows = (ushort)paging.Size
+                };
+            }
+
+            if (request.Sorting is {} sorting)
+            {
+                if (sorting.CreatedAt is {})
+                {
+                    query.Sorting.AddSorting(sorting.CreatedAt, model => model.CreatedAt);
+                }
+
+                if (sorting.Name is {})
+                {
+                    query.Sorting.AddSorting(sorting.Name, t => t.Name);
+                }
+            }
+
+            if (request.Filter is {} filter)
+            {
+                if (filter.CreatedAt is {})
+                {
+                    query.Criteria.AddCriteria(t => t.CreatedAt, filter.CreatedAt);
+                }
+
+                if (filter.Name is {})
+                {
+                    query.Criteria.AddCriteria(model => model.Name, filter.Name);
+                }
+            }
+
+            var result = await _queryProcessor.ProcessAsync(query, default);
+            var items = result.Result.Select(t => new ListItem
             {
                 Id = t.Id,
                 Name = t.Name,
@@ -51,9 +91,9 @@ namespace ToDo.Api.Services.List
             {
                 Page = new Paged
                 {
-                    TotalRows = query.Count()
+                    TotalRows = result.TotalRows
                 },
-                Result = {items}
+                Result = { items }
             };
         }
 
@@ -61,22 +101,22 @@ namespace ToDo.Api.Services.List
         {
             var query = await _queryProcessor.ProcessAsync(new GetAllListsQuery(), default);
             var list = query.Where(t => t.Id == request.Id)
-                            .Select(t => new ListItem
-                            {
-                                Id = t.Id,
-                                Name = t.Name,
-                                CreatedAt = t.CreatedAt.ToTimestamp(),
-                                CreatedBy = t.CreatedBy,
-                                ActiveCount = t.TaskCount - t.CompletedTaskCount,
-                                CompletedCount = t.CompletedTaskCount,
-                            })
-                            .FirstOrDefault();
+                .Select(t => new ListItem
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CreatedAt = t.CreatedAt.ToTimestamp(),
+                    CreatedBy = t.CreatedBy,
+                    ActiveCount = t.TaskCount - t.CompletedTaskCount,
+                    CompletedCount = t.CompletedTaskCount,
+                })
+                .FirstOrDefault();
 
             if (list == null)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, $"The list with id '{request.Id}' not found."));
             }
-            
+
             return new GetRequest.Types.Response
             {
                 List = list

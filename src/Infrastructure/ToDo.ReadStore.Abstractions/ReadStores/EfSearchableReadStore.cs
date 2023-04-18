@@ -8,36 +8,44 @@ using EventFlow.Aggregates;
 using EventFlow.EntityFramework;
 using EventFlow.EntityFramework.ReadStores;
 using EventFlow.ReadStores;
+using EventFlow.Specifications;
 using Microsoft.EntityFrameworkCore;
+using ToDo.ReadStore.Abstractions.Shared;
+using ToDo.ReadStore.Abstractions.Shared.Specifications;
 
 namespace ToDo.ReadStore.Abstractions.ReadStores
 {
-    public class EfSearchableReadStore<TReadModel, TDbContext> : ISearchableReadModelStore<TReadModel> where TReadModel : class, IReadModel, new() where TDbContext : DbContext
+    public class EfSearchableReadStore<TReadModel, TDbContext> : ISearchableReadModelStore<TReadModel>
+        where TReadModel : class, IReadModel, new() where TDbContext : DbContext
     {
         private readonly IDbContextProvider<TDbContext> _dbContextProvider;
         private readonly IEntityFrameworkReadModelStore<TReadModel> _readStore;
 
-        public EfSearchableReadStore(IEntityFrameworkReadModelStore<TReadModel> readStore, IDbContextProvider<TDbContext> dbContextProvider)
+        public EfSearchableReadStore(IEntityFrameworkReadModelStore<TReadModel> readStore,
+            IDbContextProvider<TDbContext> dbContextProvider)
         {
             _readStore = readStore;
             _dbContextProvider = dbContextProvider;
         }
 
-        public async Task<IReadOnlyCollection<TReadModel>> FindAsync(
-            Expression<Func<TReadModel, bool>> predicate,
+        public async Task<IReadOnlyCollection<TReadModel>> FindAsync(Expression<Func<TReadModel, bool>> predicate,
             CancellationToken ct = default)
+        {
+            var spec = new ReadModelSpec<TReadModel>().WithCriteria(predicate);
+            var result = await FindAsync(spec, ct);
+
+            return result.Result;
+        }
+
+        public async Task<PagedResult<TReadModel>> FindAsync(ReadModelSpec<TReadModel> specification, CancellationToken ct)
         {
             using (var dbContext = _dbContextProvider.CreateContext())
             {
                 var set = dbContext.Set<TReadModel>().AsNoTracking().AsQueryable();
-                var entity = await set.Where(predicate).ToListAsync(ct);
+                var result = await set.ApplySpecification(specification, ct);
+                var rows = await result.Result.ToListAsync(ct);
 
-                if (entity.Any() == false)
-                {
-                    return Enumerable.Empty<TReadModel>().ToList();
-                }
-
-                return entity;
+                return new PagedResult<TReadModel>(result.TotalRows, rows);
             }
         }
 

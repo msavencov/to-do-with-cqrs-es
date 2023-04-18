@@ -18,8 +18,7 @@ namespace ToDo.ReadStore.EF.Handlers
             _modelStore = modelStore;
         }
 
-        public async Task<IEnumerable<ToDoListReadModel>> ExecuteQueryAsync(GetAllListsQuery query,
-            CancellationToken ct)
+        public async Task<IEnumerable<ToDoListReadModel>> ExecuteQueryAsync(GetAllListsQuery query, CancellationToken ct)
         {
             return (await _modelStore.FindAsync(t => true, ct)).OrderByDescending(t => t.CreatedAt);
         }

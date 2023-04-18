@@ -2,21 +2,14 @@
 services:
   pgsql:
     image: postgres:15-alpine
-    restart: always
+    command: ["postgres", "-c", "log_statement=all"]
+    user: root
     environment:
       - POSTGRES_DB=todo
       - POSTGRES_USER=todo
       - POSTGRES_PASSWORD=postgres-secret
-    networks:
-      - postgresql
     ports:
       - '5432:5432'
     volumes:
       - ./data:/var/lib/postgresql/data
-      - ./logs:/logs
-
-networks:
-  postgresql:
-    name: postgresql
-    driver: overlay
-    attachable: true
+      - ./logs:/logs:rw

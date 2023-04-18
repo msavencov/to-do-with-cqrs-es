@@ -18,11 +18,3 @@ services:
     volumes:
       - ./data:/var/lib/eventstore
       - ./logs:/var/log/eventstore
-    networks:
-      - eventstore
-
-networks:
-  eventstore:
-    driver: overlay
-    name: eventstore
-    attachable: true

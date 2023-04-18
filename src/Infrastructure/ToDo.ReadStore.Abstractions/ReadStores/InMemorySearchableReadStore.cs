@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using EventFlow.Logs;
 using EventFlow.ReadStores;
 using EventFlow.ReadStores.InMemory;
+using ToDo.ReadStore.Abstractions.Shared;
+using ToDo.ReadStore.Abstractions.Shared.Specifications;
 
 namespace ToDo.ReadStore.Abstractions.ReadStores
 {
@@ -20,6 +22,11 @@ namespace ToDo.ReadStore.Abstractions.ReadStores
         {
             var func = predicate.Compile();
             return base.FindAsync(t => func(t), ct);
+        }
+
+        public Task<PagedResult<TReadModel>> FindAsync(ReadModelSpec<TReadModel> specification, CancellationToken ct)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -62,7 +62,7 @@ namespace ToDo.Api
             services.AddToDoApplication();
             
             services.AddHostedService<DBMigratorService>();
-            services.AddHostedService<ModelPopulatorService>();
+            //services.AddHostedService<ModelPopulatorService>();
         }
 
         public void ConfigureContainer(ContainerBuilder containerBuilder)

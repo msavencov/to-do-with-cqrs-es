@@ -14,7 +14,8 @@
 
 <RadzenDataGrid TItem="GridRow" @ref="grid" class="mt-2"
                 Data="@listResult" Count="@count" LoadData="@LoadData" IsLoading="@isLoading"
-                AllowPaging="true" PageSize="10"
+                AllowPaging="false" PageSize="10" AllowSorting="true"
+                AllowFiltering="true" FilterDelay="2000" Filter="OnFilter"
                 SelectionMode="DataGridSelectionMode.Single" RowSelect="OnListItemSelected">
     <Columns>
         <RadzenDataGridColumn TItem="GridRow" Property="Id" Filterable="false" Title="ID" TextAlign="TextAlign.Left"/>
